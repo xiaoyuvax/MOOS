@@ -16,7 +16,7 @@ namespace MOOS
         {
             PML4 = (ulong*)SMP.SharedPageTable;
 
-            Native.Stosb(PML4, 0, 0x1000);
+            NativeCS.Stosb(PML4, 0, 0x1000);
 
             ulong i = 0;
             //Map the first 4KiB-4GiB
@@ -89,7 +89,7 @@ namespace MOOS
             else
             {
                 p = (ulong*)Allocator.Allocate(0x1000);
-                Native.Stosb(p, 0, 0x1000);
+                NativeCS.Stosb(p, 0, 0x1000);
 
                 Directory[Entry] = (((ulong)p) & 0x000F_FFFF_FFFF_F000) | 0b11;
             }

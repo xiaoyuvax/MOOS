@@ -46,7 +46,7 @@ namespace MOOS.NET
             hdr->DestMAC = DestMAC;
             hdr->SrcMAC = Network.MAC;
             hdr->EthernetType = SwapLeftRight(Type);
-            Native.Movsb((void*)(p + (ulong)sizeof(EthernetHeader)), Data, (ulong)Length);
+            NativeCS.Movsb((void*)(p + (ulong)sizeof(EthernetHeader)), Data, (ulong)Length);
             //TODO Disposing
             Network.Controller.Send((byte*)p, Length + sizeof(EthernetHeader));
         }

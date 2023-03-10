@@ -77,7 +77,7 @@ namespace MOOS.Misc
             ThreadPool.Initialize();
 
             Console.WriteLine($"[SMP] Trampoline: 0x{((ulong)Trampoline).ToString("x2")}");
-            Native.Movsb((byte*)SMP.Trampoline, (byte*)Trampoline, 512);
+            NativeCS.Movsb((byte*)SMP.Trampoline, (byte*)Trampoline, 512);
 
             SMP.Initialize((uint)SMP.Trampoline);
 

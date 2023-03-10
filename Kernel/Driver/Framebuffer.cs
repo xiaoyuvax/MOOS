@@ -56,7 +56,7 @@ namespace MOOS
                         VideoMemory[i] = FirstBuffer[i];
                     }
                 }
-                Native.Movsd(SecondBuffer, FirstBuffer, (ulong)(Width * Height));
+                NativeCS.Movsd(SecondBuffer, FirstBuffer, (ulong)(Width * Height));
             }
             if(Graphics != null) Graphics.Update();
         }
@@ -67,8 +67,8 @@ namespace MOOS
             Height = YRes;
             FirstBuffer = (uint*)Allocator.Allocate((ulong)(XRes * YRes * 4));
             SecondBuffer = (uint*)Allocator.Allocate((ulong)(XRes * YRes * 4));
-            Native.Stosd(FirstBuffer, 0, (ulong)(XRes * YRes));
-            Native.Stosd(SecondBuffer, 0, (ulong)(XRes * YRes));
+            NativeCS.Stosd(FirstBuffer, 0, (ulong)(XRes * YRes));
+            NativeCS.Stosd(SecondBuffer, 0, (ulong)(XRes * YRes));
             Control.MousePosition.X = XRes / 2;
             Control.MousePosition.Y = YRes / 2;
             Graphics = new Graphics(Width, Height, FB);

@@ -11,7 +11,7 @@ abstract unsafe class Allocator
 {
     internal static unsafe void ZeroFill(IntPtr data, ulong size)
     {
-        Native.Stosb((void*)data, 0, size);
+        NativeCS.Stosb((void*)data, 0, size);
     }
 
     private static long GetPageIndexStart(IntPtr ptr)
@@ -32,7 +32,7 @@ abstract unsafe class Allocator
     internal static ulong Free(IntPtr intPtr)
     {
         //You can use lock(null) in Moos
-        lock (null) 
+        lock (null)
         {
             long p = GetPageIndexStart(intPtr);
             if (p == -1) return 0;
@@ -40,7 +40,7 @@ abstract unsafe class Allocator
             if (pages != 0 && pages != PageSignature)
             {
                 _Info.PageInUse -= pages;
-                Native.Stosb((void*)intPtr, 0, pages * PageSize);
+                NativeCS.Stosb((void*)intPtr, 0, pages * PageSize);
                 for (ulong i = 0; i < pages; i++)
                 {
                     _Info.Pages[(ulong)p + i] = 0;
@@ -90,7 +90,7 @@ abstract unsafe class Allocator
     public static void Initialize(IntPtr Start)
     {
         fixed (Info* pInfo = &_Info)
-            Native.Stosb(pInfo, 0, (ulong)sizeof(Info));
+            NativeCS.Stosb(pInfo, 0, (ulong)sizeof(Info));
         _Info.Start = Start;
         _Info.PageInUse = 0;
     }
@@ -103,7 +103,7 @@ abstract unsafe class Allocator
     internal static unsafe IntPtr Allocate(ulong size)
     {
         //You can use lock(null) in Moos
-        lock (null) 
+        lock (null)
         {
             ulong pages = 1;
 
@@ -183,6 +183,6 @@ abstract unsafe class Allocator
 
     internal static unsafe void MemoryCopy(IntPtr dst, IntPtr src, ulong size)
     {
-        Native.Movsb((void*)dst, (void*)src, size);
+        NativeCS.Movsb((int*)dst, (int*)src, size);
     }
 }

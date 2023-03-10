@@ -67,6 +67,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Misc\Interrupts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\MMIO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\Multiboot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\NativeCS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\Native.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\PageTable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\Panic.cs" />

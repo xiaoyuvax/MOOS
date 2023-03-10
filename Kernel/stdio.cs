@@ -47,7 +47,7 @@ namespace MOOS
             }
             file.DATA = (byte*)Allocator.Allocate((ulong)buffer.Length);
             fixed (byte* p = buffer)
-                Native.Movsb(file.DATA, p, (ulong)buffer.Length);
+                NativeCS.Movsb(file.DATA, p, (ulong)buffer.Length);
             file.LENGTH = buffer.Length;
             buffer.Dispose();
             sname.Dispose();
@@ -70,7 +70,7 @@ namespace MOOS
         [RuntimeExport("fread")]
         public static void fread(byte* buffer,long elementSize,long elementCount,FILE* handle)
         {
-            Native.Movsb(buffer, handle->DATA + handle->OFFSET, (ulong)elementSize);
+            NativeCS.Movsb(buffer, handle->DATA + handle->OFFSET, (ulong)elementSize);
         }
     }
 }

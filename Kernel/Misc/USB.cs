@@ -41,10 +41,10 @@ namespace MOOS.Misc
         public ushort Index;
         public ushort Length;
 
-        public void Clean() 
+        public void Clean()
         {
             fixed (void* p = &this)
-                Native.Stosb(p, 0, (ulong)sizeof(USBRequest));
+                NativeCS.Stosb(p, 0, (ulong)sizeof(USBRequest));
         }
     }
 
@@ -53,11 +53,11 @@ namespace MOOS.Misc
         public static byte NumDevice;
         public static byte DeviceAddr;
 
-        public static bool SendAndReceive(USBDevice device, USBRequest* cmd, void* buffer,USBDevice parent)
+        public static bool SendAndReceive(USBDevice device, USBRequest* cmd, void* buffer, USBDevice parent)
         {
             if (device.USBVersion == 2)
             {
-                return EHCI.SendAndReceive(device.Address, cmd, buffer, parent,device.Speed);
+                return EHCI.SendAndReceive(device.Address, cmd, buffer, parent, device.Speed);
             }
             else
             {
@@ -65,14 +65,14 @@ namespace MOOS.Misc
             }
         }
 
-        public static void OnInterrupt() 
+        public static void OnInterrupt()
         {
-            if(HID.Keyboard != null)
+            if (HID.Keyboard != null)
             {
                 HID.GetKeyboardThings(HID.Keyboard, out byte ScanCode, out ConsoleKey Key);
                 Keyboard.KeyInfo.KeyState = Key != ConsoleKey.None ? ConsoleKeyState.Pressed : ConsoleKeyState.Released;
 
-                if(Key != ConsoleKey.None)
+                if (Key != ConsoleKey.None)
                 {
                     Keyboard.KeyInfo.ScanCode = ScanCode;
                     Keyboard.KeyInfo.Key = Key;
@@ -92,9 +92,9 @@ namespace MOOS.Misc
             }
         }
 
-        public static bool InitPort(int port, USBDevice parent,int version,int speed) 
+        public static bool InitPort(int port, USBDevice parent, int version, int speed)
         {
-            if(version == 2)
+            if (version == 2)
             {
                 EHCI.InitPort(port, parent, speed);
             }

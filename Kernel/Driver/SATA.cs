@@ -426,7 +426,7 @@ namespace MOOS
 
                 HBACommandTable* table = ((HBACommandTable*)(hdr->CommandTableBaseAddress));
 
-                Native.Stosb(table, 0, (ulong)(sizeof(HBACommandTable) + (hdr->PRDTLength - 1) * sizeof(HBAPRDTEntry)));
+                NativeCS.Stosb(table, 0, (ulong)(sizeof(HBACommandTable) + (hdr->PRDTLength - 1) * sizeof(HBAPRDTEntry)));
 
                 int i = 0;
                 for(i = 0; i < hdr->PRDTLength - 1; i++) 

@@ -13,13 +13,13 @@ namespace MOOS.FS
 
         public override bool Read(ulong sector, uint count, byte* p) 
         {
-            Native.Movsb(p, ptr + (sector * 512), 512 * count);
+            NativeCS.Movsb(p, ptr + (sector * 512), 512 * count);
             return true;
         }
 
         public override bool Write(ulong sector, uint count, byte* p)
         {
-            Native.Movsb(ptr + (sector * 512), p, 512 * count);
+            NativeCS.Movsb(ptr + (sector * 512), p, 512 * count);
             return true;
         }
     }

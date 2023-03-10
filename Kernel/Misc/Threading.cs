@@ -216,7 +216,7 @@ namespace MOOS.Misc
                     Threads[Index].RunOnWhichCPU == SMP.ThisCPU
                     )
                 {
-                    Native.Movsb(Threads[Index].Stack, stack, (ulong)sizeof(IDT.IDTStackGeneric));
+                    NativeCS.Movsb(Threads[Index].Stack, stack, (ulong)sizeof(IDT.IDTStackGeneric));
                     break;
                 }
                 Index = (Index + 1) % Threads.Count;
@@ -249,7 +249,7 @@ namespace MOOS.Misc
             TickAll++;
             #endregion
 
-            Native.Movsb(stack, Threads[Index].Stack, (ulong)sizeof(IDT.IDTStackGeneric));
+            NativeCS.Movsb(stack, Threads[Index].Stack, (ulong)sizeof(IDT.IDTStackGeneric));
         }
     }
 }

@@ -37,20 +37,20 @@
 
             fixed (int* aDataPtr = aData)
             {
-                Native.Movsb(dest, aDataPtr + aIndex, (ulong)aCount);
+                NativeCS.Movsb(dest, aDataPtr + aIndex, (ulong)aCount);
             }
         }
 
         public unsafe void Fill(uint offset, uint size, uint color)
         {
-            Native.Stosd((void*)(Base + offset), color, size);
+            NativeCS.Stosd((void*)(Base + offset), color, size);
         }
 
         public unsafe void MoveDown(uint aDest, uint aSrc, uint aCount)
         {
             byte* dest = (byte*)(Base + aDest);
             byte* src = (byte*)(Base + aSrc);
-            Native.Movsb(dest, src, aCount);
+            NativeCS.Movsb(dest, src, aCount);
         }
     }
 }

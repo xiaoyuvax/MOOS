@@ -110,7 +110,7 @@ namespace MOOS.FS
                 byte[] buffer = new byte[size];
                 fixed (byte* pp = buffer)
                 {
-                    Native.Movsb(pp, data, size);
+                    NativeCS.Movsb(pp, data, size);
                 }
                 Allocator.Free((System.IntPtr)data);
                 return buffer;

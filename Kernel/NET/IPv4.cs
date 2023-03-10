@@ -46,7 +46,7 @@ namespace MOOS.NET
                     if (data[0] == 8)
                     {
                         byte* p = (byte*)Allocator.Allocate((ulong)length);
-                        Native.Movsb(p, data, (ulong)length);
+                        NativeCS.Movsb(p, data, (ulong)length);
                         p[0] = 0;
                         *(ushort*)(p + 2) = 0;
                         *(ushort*)(p + 2) = CalculateChecksum(p, length);
@@ -83,7 +83,7 @@ namespace MOOS.NET
 
             hdr->DestIP = DestIP.AddressV4;
             hdr->HeaderChecksum = CalculateChecksum((byte*)hdr, sizeof(IPv4Header));
-            Native.Movsb(((byte*)hdr) + sizeof(IPv4Header), Data, (ulong)Length);
+            NativeCS.Movsb(((byte*)hdr) + sizeof(IPv4Header), Data, (ulong)Length);
             MACAddress MAC = ARP.Lookup(IsSameSubnet(DestIP, Network.IP) ? DestIP : Network.Gateway);
             Ethernet.SendPacket(MAC, (ushort)Ethernet.EthernetType.IPv4, hdr, sizeof(IPv4Header) + Length);
             Allocator.Free((IntPtr)hdr);

@@ -379,7 +379,7 @@ namespace MOOS.Driver
         public override void Send(byte* Buffer, int Length)
         {
             TXDesc* desc = (TXDesc*)(TXDescs + (TXCurr * 16));
-            Native.Movsb((void*)desc->addr, Buffer, (ulong)Length);
+            NativeCS.Movsb((void*)desc->addr, Buffer, (ulong)Length);
             desc->length = (ushort)Length;
             desc->cmd = (1 << 0) | (1 << 1) | (1 << 3);
             desc->status = 0;

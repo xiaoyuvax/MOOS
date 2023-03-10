@@ -165,7 +165,7 @@ namespace MOOS.Driver
             public void Clean()
             {
                 fixed (void* p = &this)
-                    Native.Stosb(p, 0, (ulong)sizeof(TD));
+                    NativeCS.Stosb(p, 0, (ulong)sizeof(TD));
             }
         }
 
@@ -188,7 +188,7 @@ namespace MOOS.Driver
             public void Clean()
             {
                 fixed (void* p = &this)
-                    Native.Stosb(p, 0, (ulong)sizeof(QH));
+                    NativeCS.Stosb(p, 0, (ulong)sizeof(QH));
             }
         }
 

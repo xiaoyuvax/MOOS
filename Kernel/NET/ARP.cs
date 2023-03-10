@@ -63,7 +63,7 @@ namespace MOOS.NET
                 if (Ethernet.SwapLeftRight(hdr->Operation) == (ushort)ARPOperation.Request)
                 {
                     ARPHeader* _hdr = (ARPHeader*)Allocator.Allocate((ulong)(sizeof(ARPHeader)));
-                    Native.Movsb(_hdr, hdr, (ulong)(sizeof(ARPHeader)));
+                    NativeCS.Movsb(_hdr, hdr, (ulong)(sizeof(ARPHeader)));
 
                     _hdr->Operation = Ethernet.SwapLeftRight((uint)ARPOperation.Reply);
                     _hdr->DestMAC = _hdr->SourceMAC;

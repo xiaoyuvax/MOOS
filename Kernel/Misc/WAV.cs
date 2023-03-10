@@ -38,7 +38,7 @@ namespace MOOS.Misc
                 PCM = new byte[hdr->Subchunk2Size];
                 fixed (byte* PPCM = PCM)
                 {
-                    Native.Movsb(PPCM, PWAV + sizeof(Header), (ulong)PCM.Length);
+                    NativeCS.Movsb(PPCM, PWAV + sizeof(Header), (ulong)PCM.Length);
                 }
                 header = *hdr;
             }

@@ -28,7 +28,7 @@ namespace MOOS
             int PacketLen = (sizeof(UDPHeader) + Data.Length);
             byte* Buffer = (byte*)Allocator.Allocate((ulong)PacketLen);
             UDPHeader* header = (UDPHeader*)Buffer;
-            Native.Stosb(header, 0, (ulong)PacketLen);
+            NativeCS.Stosb(header, 0, (ulong)PacketLen);
             header->SrcPort = Ethernet.SwapLeftRight(SourcePort);
             header->DestPort = Ethernet.SwapLeftRight(DestPort);
             header->Length = Ethernet.SwapLeftRight(((ushort)PacketLen));
@@ -54,7 +54,7 @@ namespace MOOS
             byte[] Buffer = new byte[len];
             fixed (byte* P = Buffer)
             {
-                Native.Movsb(P, frame, (ulong)len);
+                NativeCS.Movsb(P, frame, (ulong)len);
             }
 
             for (int i = 0; i < Clients.Count; i++) 

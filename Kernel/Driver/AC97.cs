@@ -69,7 +69,7 @@ namespace MOOS
             {
                 //Clear last buffer
                 int LastIndex = Index;
-                Native.Stosb((void*)BufferDescriptors[Index].Address, 0, Audio.SampleRate * 2);
+                NativeCS.Stosb((void*)BufferDescriptors[Index].Address, 0, Audio.SampleRate * 2);
 
                 Index++;
                 Index %= (byte)NumDescriptors;

@@ -34,11 +34,11 @@ namespace MOOS.Misc
             CanTake = false;
             if (bytesWritten + len > CacheSize)
             {
-                Native.Movsb(cache + bytesWritten - len, cache + bytesWritten, len);
+                NativeCS.Movsb(cache + bytesWritten - len, cache + bytesWritten, len);
                 bytesWritten -= len;
             }
 
-            Native.Movsb(cache + bytesWritten, buffer, len);
+            NativeCS.Movsb(cache + bytesWritten, buffer, len);
             bytesWritten += len;
             CanTake = true;
             return len;
@@ -56,11 +56,11 @@ namespace MOOS.Misc
             {
                 int size = SizePerPacket > bytesWritten ? bytesWritten : SizePerPacket;
 
-                Native.Movsb(buffer, cache, size);
+                NativeCS.Movsb(buffer, cache, size);
                 bytesWritten -= size;
                 if(bytesWritten > SizePerPacket)
                 {
-                    Native.Movsb(cache, cache + size, bytesWritten);
+                    NativeCS.Movsb(cache, cache + size, bytesWritten);
                 }
 
                 return true;

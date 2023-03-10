@@ -49,17 +49,17 @@ static unsafe class Native
     [DllImport("*")]
     public static extern uint In32(uint port);
 
-    [DllImport("*")]
-    public static extern void Stosd(void* p, uint value, ulong count);
+    //[DllImport("*")]
+    //public static extern void Stosd(void* p, uint value, ulong count);
 
-    [DllImport("*")]
-    public static extern unsafe void Stosb(void* p, byte value, ulong count);
+    //[DllImport("*")]
+    //public static extern unsafe void Stosb(void* p, byte value, ulong count);
 
-    [DllImport("*")]
-    public static extern void Movsb(void* dest, void* source, ulong count);
+    //[DllImport("*")]
+    //public static extern void Movsb(void* dest, void* source, ulong count);
 
-    [DllImport("*")]
-    public static extern void Movsd(uint* dest, uint* source, ulong count);
+    //[DllImport("*")]
+    //public static extern void Movsd(uint* dest, uint* source, ulong count);
 
     [DllImport("*")]
     public static extern void Load_GDT(ref GDT.GDTDescriptor gdtr);

@@ -44,7 +44,7 @@ namespace ConsoleApp1
         [RuntimeExport("malloc")]
         public static nint malloc(ulong size) => Allocate(size);
 
-        [DllImport("WriteString")]
+        [DllImport("WriteString0")]
         public static extern void WriteString(string s);
 
         [RuntimeExport("Main")]

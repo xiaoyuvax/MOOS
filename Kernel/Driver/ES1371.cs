@@ -41,7 +41,7 @@ namespace MOOS
             {
                 Native.Out32(BAR0 + 0x20, Native.In32(BAR0 + 0x20) & 0xFFFFFDFF);
 
-                Native.Stosb(Buffer, 0, CacheSize);
+                NativeCS.Stosb(Buffer, 0, CacheSize);
                 Audio.require(Buffer);
             }
         }

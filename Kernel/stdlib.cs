@@ -5,29 +5,29 @@ namespace MOOS
     public static unsafe class stdlib
     {
         [RuntimeExport("malloc")]
-        public static void* malloc(ulong size) 
+        public static void* malloc(ulong size)
         {
             return (void*)Allocator.Allocate(size);
         }
 
         [RuntimeExport("free")]
-        public static void free(void* ptr) 
+        public static void free(void* ptr)
         {
             Allocator.Free((System.IntPtr)ptr);
         }
 
         [RuntimeExport("realloc")]
-        public static void* realloc(void* ptr, ulong size) 
+        public static void* realloc(void* ptr, ulong size)
         {
             return (void*)Allocator.Reallocate((System.IntPtr)ptr, size);
         }
 
 
         [RuntimeExport("calloc")]
-        public static void* calloc(ulong num,ulong size)
+        public static void* calloc(ulong num, ulong size)
         {
             void* ptr = (void*)Allocator.Allocate(num * size);
-            Native.Stosb(ptr, 0, num * size);
+            NativeCS.Stosb(ptr, 0, num * size);
             return ptr;
         }
 
@@ -54,7 +54,7 @@ namespace MOOS
         public static void* kcalloc(ulong num, ulong size)
         {
             void* ptr = (void*)Allocator.Allocate(num * size);
-            Native.Stosb(ptr, 0, num * size);
+            NativeCS.Stosb(ptr, 0, num * size);
             return ptr;
         }
     }

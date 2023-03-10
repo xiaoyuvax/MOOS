@@ -59,12 +59,12 @@ namespace MOOS
                     return (delegate*<uint>)&API_Width;
                 case "Height":
                     return (delegate*<uint>)&API_Height;
-                case "WriteString":
+                case "WriteString0":
                     return (delegate*<string, void>)&API_WriteString;
                 case "GetTime":
                     return (delegate*<ulong>)&API_GetTime;
                 case "DrawImage":
-                    return (delegate*<int,int,Image,void>)&API_DrawImage;
+                    return (delegate*<int, int, Image, void>)&API_DrawImage;
                 case "Error":
                     return (delegate*<string, bool, void>)&API_Error;
                 case "StartThread":
@@ -117,14 +117,14 @@ namespace MOOS
 
         }
 
-        public static void API_StartThread(delegate* <void> func)
+        public static void API_StartThread(delegate*<void> func)
         {
             new Thread(func).Start();
         }
 
-        public static void API_Error(string s,bool skippable)
+        public static void API_Error(string s, bool skippable)
         {
-            Panic.Error(s,skippable);
+            Panic.Error(s, skippable);
         }
 
         public static ulong API_GetTime()
@@ -155,7 +155,7 @@ namespace MOOS
             Framebuffer.Graphics.DrawImage(X, Y, image, false);
         }
 
-        public static void API_WriteString(string s) 
+        public static void API_WriteString(string s)
         {
             Console.Write(s);
             s.Dispose();
@@ -185,7 +185,7 @@ namespace MOOS
         }
 
         [RuntimeExport("Lock")]
-        public static void API_Lock() 
+        public static void API_Lock()
         {
             if (ThreadPool.CanLock)
             {
@@ -216,38 +216,38 @@ namespace MOOS
             Framebuffer.Graphics.DrawPoint(x, y, color);
         }
 
-        public static void API_SwitchToConsoleMode() 
+        public static void API_SwitchToConsoleMode()
         {
             Framebuffer.TripleBuffered = false;
         }
 
-        public static void API_ReadAllBytes(string name,ulong* length,byte** data) 
+        public static void API_ReadAllBytes(string name, ulong* length, byte** data)
         {
             byte[] buffer = File.ReadAllBytes(name);
 
             *data = (byte*)Allocator.Allocate((ulong)buffer.Length);
             *length = (ulong)buffer.Length;
-            fixed (byte* p = buffer) Native.Movsb(*data, p, *length);
+            fixed (byte* p = buffer) NativeCS.Movsb(*data, p, *length);
 
             buffer.Dispose();
         }
 
-        public static void API_Sleep(ulong ms) 
+        public static void API_Sleep(ulong ms)
         {
             Thread.Sleep(ms);
         }
 
-        public static ulong API_GetTick() 
+        public static ulong API_GetTick()
         {
             return Timer.Ticks;
         }
 
-        public static void API_Write(char c) 
+        public static void API_Write(char c)
         {
             Console.Write(c);
         }
 
-        public static void API_WriteLine() 
+        public static void API_WriteLine()
         {
             Console.WriteLine();
         }
@@ -264,7 +264,7 @@ namespace MOOS
             return Allocator.Free(ptr);
         }
 
-        public static nint API_Reallocate(nint intPtr, ulong size) 
+        public static nint API_Reallocate(nint intPtr, ulong size)
         {
             return Allocator.Reallocate(intPtr, size);
         }
