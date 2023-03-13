@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -38,10 +38,14 @@
 		<LinkerArg Include="/fixed /base:0x10000000 /map:Kernel.map" />
 	</ItemGroup>
 
-	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile!-->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.3" />
+	</ItemGroup>
+
+	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile! -->
+	<!--<ItemGroup>	
+		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
+	</ItemGroup>-->
 
 	<Import Project="..\Kernel\Kernel.projitems" Label="Shared" />
 
@@ -59,7 +63,7 @@
 	<Target Name="RunQemu" AfterTargets="BuildISO" Condition="$(vm) == 'qemu'">
 		<Error Text="Please install QEMU in order to debug MOOS!(do not modify the path) https://www.qemu.org/download/#windows" Condition="!Exists('D:\Program Files\qemu\qemu-system-x86_64.exe')"></Error>
 		<Error Text="Please install Intel Hardware Accelerated Execution Manager (HAXM) in order to speed up QEMU https://github.com/intel/haxm/releases" Condition="!Exists('D:\Program Files\Intel\HAXM\IntelHaxm.sys')"></Error>
-		
+
 		<Exec Command="&quot;D:\\Program Files\\qemu\\qemu-system-x86_64.exe&quot; -accel hax -m 1024 -smp 2 -k en-gb -boot d -cdrom &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)$(TargetName).iso&quot; -d guest_errors -serial stdio -drive id=disk,file=&quot;$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar&quot;,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0 -device AC97 -rtc base=localtime"></Exec>
 	</Target>
 
@@ -76,14 +80,14 @@
 
 		<Exec Command="&quot;D:\\Program Files\\qemu\\qemu-system-x86_64.exe&quot; -accel hax -m 1024 -smp 2 -k en-gb -boot d -cdrom &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)$(TargetName).iso&quot; -d guest_errors -serial stdio -device AC97 -rtc base=localtime -net nic,model=rtl8139 -net tap,ifname=tap"></Exec>
 	</Target>
-	
+
 	<Target Name="RunVMware" AfterTargets="BuildISO" Condition="$(vm) == 'vmware'">
 		<Error Text="Please install VMWare Player in order to Run MOOS!" Condition="!Exists('D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe')And!Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')"></Error>
-		
+
 		<Exec Condition="Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')" Command="&quot;D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe&quot; &quot;$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.vmx"></Exec>
 		<Exec Condition="Exists('D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe')And!Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')" Command="&quot;D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe&quot; &quot;$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.vmx"></Exec>
 	</Target>
 
 	<Import Project="..\Corlib\Corlib.projitems" Label="Shared" />
-	
+
 </Project>
