@@ -1,9 +1,8 @@
-using Internal.Runtime.CompilerServices;
 using MOOS;
 using MOOS.Driver;
 using MOOS.Misc;
-using MOOS.NET;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static Internal.Runtime.CompilerHelpers.InteropHelpers;
 
@@ -34,9 +33,7 @@ public static class IDT
     private static IDTEntry[] idt;
     public static IDTDescriptor idtr;
 
-
     public static bool Initialized { get; private set; }
-
 
     public static unsafe bool Initialize()
     {
@@ -66,7 +63,7 @@ public static class IDT
         Native.Cli();
     }
 
-    public struct RegistersStack 
+    public struct RegistersStack
     {
         public ulong rax;
         public ulong rcx;
@@ -104,7 +101,7 @@ public static class IDT
     [RuntimeExport("intr_handler")]
     public static unsafe void intr_handler(int irq, IDTStackGeneric* stack)
     {
-        if(irq < 0x20)
+        if (irq < 0x20)
         {
             Panic.Error($"CPU{SMP.ThisCPU} KERNEL PANIC!!!", true);
             InterruptReturnStack* irs;
@@ -159,6 +156,7 @@ public static class IDT
                         Console.WriteLine("PAGE FAULT");
                     }
                     break;
+
                 case 16: Console.WriteLine("COPR ERROR"); break;
                 default: Console.WriteLine("UNKNOWN EXCEPTION"); break;
             }
@@ -167,7 +165,7 @@ public static class IDT
         }
 
         //DEAD
-        if(irq == 0xFD) 
+        if (irq == 0xFD)
         {
             Native.Cli();
             Native.Hlt();

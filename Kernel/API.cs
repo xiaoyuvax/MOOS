@@ -4,7 +4,7 @@ using MOOS.Misc;
 using System;
 using System.Drawing;
 using System.Runtime;
-using Internal.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 #if HasGUI
 
@@ -39,7 +39,7 @@ namespace MOOS
                 "Update" => (delegate*<void>)&API_Update,
                 "Width" => (delegate*<uint>)&API_Width,
                 "Height" => (delegate*<uint>)&API_Height,
-                "WriteString" => (delegate*<string, void>)&API_WriteString,
+                "WriteString0" => (delegate*<string, void>)&API_WriteString,
                 "GetTime" => (delegate*<ulong>)&API_GetTime,
                 "DrawImage" => (delegate*<int, int, Image, void>)&API_DrawImage,
                 "Error" => (delegate*<string, bool, void>)&API_Error,

@@ -1,13 +1,10 @@
-using Internal.Runtime.CompilerServices;
-using MOOS;
 using MOOS.Misc;
 using System;
-using System.Runtime;
 
 /// <summary>
 /// Nifanfa's Super Fast Memory Allocation Lib
 /// </summary>
-abstract unsafe class Allocator
+internal abstract unsafe class Allocator
 {
     internal static unsafe void ZeroFill(IntPtr data, ulong size)
     {
@@ -24,7 +21,7 @@ abstract unsafe class Allocator
          * This will get wrong if the size is larger than PageSize
          * and however the allocated address should be aligned
          */
-        //p &= ~PageSize; 
+        //p &= ~PageSize;
         p /= PageSize;
         return (long)p;
     }

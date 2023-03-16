@@ -1,11 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Internal.Runtime.CompilerServices;
 using System;
-using System.Runtime;
-
-using Debug = System.Diagnostics.Debug;
+using System.Runtime.CompilerServices;
 
 namespace Internal.Runtime.CompilerHelpers
 {
@@ -54,7 +51,7 @@ namespace Internal.Runtime.CompilerHelpers
                     {
                         if (pDimensions[2 * i] != 0)
                             return null;
-                            //throw new PlatformNotSupportedException(SR.Arg_NotSupportedNonZeroLowerBound);
+                        //throw new PlatformNotSupportedException(SR.Arg_NotSupportedNonZeroLowerBound);
 
                         pDimensions[i] = pDimensions[2 * i + 1];
                     }

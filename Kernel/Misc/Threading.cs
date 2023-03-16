@@ -2,11 +2,10 @@
  * Copyright(c) 2022 nifanfa, This code is part of the Moos licensed under the MIT licence.
  */
 
-using Internal.Runtime.CompilerServices;
 using MOOS.Driver;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace MOOS.Misc
@@ -18,7 +17,7 @@ namespace MOOS.Misc
         public int RunOnWhichCPU;
         public bool IsIdleThread = false;
 
-        public Thread(delegate*<void> method,ulong stack_size = 16384)
+        public Thread(delegate*<void> method, ulong stack_size = 16384)
         {
             NewThread(method, stack_size);
         }
@@ -62,9 +61,9 @@ namespace MOOS.Misc
             lock (this)
             {
                 bool hasThatCPU = false;
-                for(int i = 0; i < ACPI.LocalAPIC_CPUIDs.Count; i++) 
+                for (int i = 0; i < ACPI.LocalAPIC_CPUIDs.Count; i++)
                 {
-                    if (ACPI.LocalAPIC_CPUIDs[i] == run_on_which_cpu) 
+                    if (ACPI.LocalAPIC_CPUIDs[i] == run_on_which_cpu)
                     {
                         hasThatCPU = true;
                     }
@@ -175,7 +174,7 @@ namespace MOOS.Misc
 
         public static bool CanLock => Unsafe.As<bool, ulong>(ref Initialized);
 
-        public static void Lock() 
+        public static void Lock()
         {
             Locker = SMP.ThisCPU;
             Locked = true;
@@ -183,7 +182,7 @@ namespace MOOS.Misc
             LocalAPIC.SendAllInterrupt(0x20);
         }
 
-        public static void UnLock() 
+        public static void UnLock()
         {
             Locked = false;
         }
@@ -209,7 +208,7 @@ namespace MOOS.Misc
             //Lock locker CPU
             if (Locked && Locker == SMP.ThisCPU) return;
 
-            for(; ; )
+            for (; ; )
             {
                 if (
                     !Threads[Index].Terminated &&
@@ -232,7 +231,8 @@ namespace MOOS.Misc
             );
 
             #region CPU Usage
-            if(SMP.ThisCPU== 0)
+
+            if (SMP.ThisCPU == 0)
             {
                 if ((Timer.Ticks % 100) == 0)
                 {
@@ -247,7 +247,8 @@ namespace MOOS.Misc
                 TickIdle++;
             }
             TickAll++;
-            #endregion
+
+            #endregion CPU Usage
 
             NativeCS.Movsb(stack, Threads[Index].Stack, (ulong)sizeof(IDT.IDTStackGeneric));
         }

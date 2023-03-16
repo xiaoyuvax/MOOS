@@ -1,11 +1,10 @@
-using Internal.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-
-static class GDT
+internal static class GDT
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct GDTEntry
+    private struct GDTEntry
     {
         public ushort LimitLow;
         public ushort BaseLow;
@@ -23,7 +22,7 @@ static class GDT
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct TSSEntry
+    private struct TSSEntry
     {
         public ushort LimitLow;
         public ushort BaseLow;
@@ -36,7 +35,7 @@ static class GDT
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct TSS
+    private struct TSS
     {
         public uint Reserved0;
         public uint Rsp0Low;
@@ -67,7 +66,7 @@ static class GDT
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct GDTS
+    private struct GDTS
     {
         public GDTEntry Empty;
         public GDTEntry KernelCode;
@@ -75,11 +74,9 @@ static class GDT
         public TSSEntry TSS;
     }
 
-
-    static TSS tss;
+    private static TSS tss;
     static GDTS gdts;
     public static GDTDescriptor gdtr;
-
 
     public static void Initialise()
     {

@@ -1,4 +1,3 @@
-using Internal.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Threading
@@ -16,9 +15,9 @@ namespace System.Threading
         }
 
         [DllImport("*")]
-        static extern void Lock();
+        private static extern void Lock();
 
         [DllImport("*")]
-        static extern void Unlock();
+        private static extern void Unlock();
     }
 }

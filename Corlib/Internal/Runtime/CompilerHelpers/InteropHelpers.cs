@@ -30,7 +30,7 @@ namespace Internal.Runtime.CompilerHelpers
             return ((delegate*<MethodFixupCell*, IntPtr>)ptr)(pCell);
         }
 
-        public static unsafe string StringToAnsiString(string str, bool bestFit, bool throwOnUnmappableChar) 
+        public static unsafe string StringToAnsiString(string str, bool bestFit, bool throwOnUnmappableChar)
         {
             //No Ansi support, Return unicode
             return str;
@@ -44,7 +44,12 @@ namespace Internal.Runtime.CompilerHelpers
 
         public unsafe static void CoTaskMemFree(void* p)
         {
-            //TO-DO
+            //To Do
         }
+
+        //public unsafe static void FreeCoTaskMem(void* p)
+        //{
+        //    stdlib.free(p);  //Can i simply free it?
+        //}
     }
 }

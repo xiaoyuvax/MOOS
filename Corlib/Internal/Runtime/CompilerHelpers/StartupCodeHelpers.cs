@@ -1,6 +1,6 @@
-using Internal.Runtime.CompilerServices;
 using System;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Internal.Runtime.CompilerHelpers
@@ -14,44 +14,52 @@ namespace Internal.Runtime.CompilerHelpers
         public static int __CheckForDebuggerJustMyCode() => 0;
 
         [RuntimeExport("__fail_fast")]
-        static void FailFast() { while (true) ; }
+        private static void FailFast()
+        { while (true) ; }
 
         [RuntimeExport("memset")]
-        static unsafe void MemSet(byte* ptr, int c, int count)
+        private static unsafe void MemSet(byte* ptr, int c, int count)
         {
             for (byte* p = ptr; p < ptr + count; p++)
                 *p = (byte)c;
         }
 
         [RuntimeExport("memcpy")]
-        static unsafe void MemCpy(byte* dest, byte* src, ulong count)
+        private static unsafe void MemCpy(byte* dest, byte* src, ulong count)
         {
             for (ulong i = 0; i < count; i++) dest[i] = src[i];
         }
 
         [RuntimeExport("RhpFallbackFailFast")]
-        static void RhpFallbackFailFast() { while (true) ; }
+        private static void RhpFallbackFailFast()
+        { while (true) ; }
 
         [RuntimeExport("RhpReversePInvoke2")]
-        static void RhpReversePInvoke2(IntPtr frame) { }
+        private static void RhpReversePInvoke2(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpReversePInvokeReturn2")]
-        static void RhpReversePInvokeReturn2(IntPtr frame) { }
+        private static void RhpReversePInvokeReturn2(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpReversePInvoke")]
-        static void RhpReversePInvoke(IntPtr frame) { }
+        private static void RhpReversePInvoke(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpReversePInvokeReturn")]
-        static void RhpReversePInvokeReturn(IntPtr frame) { }
+        private static void RhpReversePInvokeReturn(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpPInvoke")]
-        static void RhpPinvoke(IntPtr frame) { }
+        private static void RhpPinvoke(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpPInvokeReturn")]
-        static void RhpPinvokeReturn(IntPtr frame) { }
+        private static void RhpPinvokeReturn(IntPtr frame)
+        { }
 
         [RuntimeExport("RhpNewFast")]
-        static unsafe object RhpNewFast(EEType* pEEType)
+        private static unsafe object RhpNewFast(EEType* pEEType)
         {
             var size = pEEType->BaseSize;
 
@@ -61,7 +69,7 @@ namespace Internal.Runtime.CompilerHelpers
 
             var data = malloc(size);
             var obj = Unsafe.As<IntPtr, object>(ref data);
-            MemSet((byte*)data,0, (int)size);
+            MemSet((byte*)data, 0, (int)size);
             *(IntPtr*)data = (IntPtr)pEEType;
 
             return obj;
@@ -81,7 +89,7 @@ namespace Internal.Runtime.CompilerHelpers
 
             var data = malloc(size);
             var obj = Unsafe.As<IntPtr, object>(ref data);
-            MemSet((byte*)data,0, (int)size);
+            MemSet((byte*)data, 0, (int)size);
             *(IntPtr*)data = (IntPtr)pEEType;
 
             var b = (byte*)data;
@@ -92,25 +100,25 @@ namespace Internal.Runtime.CompilerHelpers
         }
 
         [RuntimeExport("RhpAssignRef")]
-        static unsafe void RhpAssignRef(void** address, void* obj)
+        private static unsafe void RhpAssignRef(void** address, void* obj)
         {
             *address = obj;
         }
 
         [RuntimeExport("RhpByRefAssignRef")]
-        static unsafe void RhpByRefAssignRef(void** address, void* obj)
+        private static unsafe void RhpByRefAssignRef(void** address, void* obj)
         {
             *address = obj;
         }
 
         [RuntimeExport("RhpCheckedAssignRef")]
-        static unsafe void RhpCheckedAssignRef(void** address, void* obj)
+        private static unsafe void RhpCheckedAssignRef(void** address, void* obj)
         {
             *address = obj;
         }
 
         [RuntimeExport("RhpStelemRef")]
-        static unsafe void RhpStelemRef(Array array, int index, object obj)
+        private static unsafe void RhpStelemRef(Array array, int index, object obj)
         {
             fixed (int* n = &array._numComponents)
             {
@@ -145,7 +153,7 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
-        public static void InitializeModules(IntPtr Modules) 
+        public static void InitializeModules(IntPtr Modules)
         {
             for (int i = 0; ; i++)
             {
@@ -155,7 +163,7 @@ namespace Internal.Runtime.CompilerHelpers
                 var header = (ReadyToRunHeader*)((IntPtr*)Modules)[i];
                 var sections = (ModuleInfoRow*)(header + 1);
 
-                if(header->Signature != ReadyToRunHeaderConstants.Signature) 
+                if (header->Signature != ReadyToRunHeaderConstants.Signature)
                 {
                     FailFast();
                 }
@@ -184,7 +192,7 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
-        static unsafe void InitializeStatics(IntPtr rgnStart, IntPtr rgnEnd)
+        private static unsafe void InitializeStatics(IntPtr rgnStart, IntPtr rgnEnd)
         {
             for (IntPtr* block = (IntPtr*)rgnStart; block < (IntPtr*)rgnEnd; block++)
             {
@@ -198,7 +206,7 @@ namespace Internal.Runtime.CompilerHelpers
                     if ((blockAddr & GCStaticRegionConstants.HasPreInitializedData) == GCStaticRegionConstants.HasPreInitializedData)
                     {
                         IntPtr pPreInitDataAddr = *(pBlock + 1);
-                        fixed(byte* p = &obj.GetRawData())
+                        fixed (byte* p = &obj.GetRawData())
                         {
                             MemCpy(p, (byte*)pPreInitDataAddr, obj.GetRawDataSize());
                         }

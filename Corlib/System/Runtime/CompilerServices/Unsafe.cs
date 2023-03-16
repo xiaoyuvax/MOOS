@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Internal.Runtime.CompilerServices
+namespace System.Runtime.CompilerServices
 {
     public static unsafe class Unsafe
     {
