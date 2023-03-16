@@ -15,9 +15,11 @@
 
 		<IlcSystemModule>MOOS</IlcSystemModule>
 		<EntryPointSymbol>Entry</EntryPointSymbol>
-		<LinkerSubsystem>NATIVE</LinkerSubsystem>
+		<LinkerSubsystem>NATIVE</LinkerSubsystem>		
 		<!--Make the code faster!-->
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
+		<!--Following line solves build error after upgrading to MSBuild version 17.5.0+6f08c67f3-->
+		<IlcPath>C:\Users\Administrator.SP\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
 	</PropertyGroup>
 
 	<!--CustomizeReferences-->
@@ -32,20 +34,24 @@
 		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\NativeLib.lib" />
 		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\LibC.lib" />
 		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\Doom.lib" />
+		<RuntimeAssembly Include="MOOS"></RuntimeAssembly>
 	</ItemGroup>
 
 	<ItemGroup>
 		<LinkerArg Include="/fixed /base:0x10000000 /map:Kernel.map" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.3" />
-	</ItemGroup>
-
-	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile! -->
-	<!--<ItemGroup>	
-		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
+	<!--<ItemGroup>
+		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.3" />
 	</ItemGroup>-->
+
+	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile!-->
+	<ItemGroup>
+		<PackageDefinitions Include="MOOS" />
+		<PrivateSdkAssemblies Include="MOOS" />
+		<FrameworkAssemblies Include="MOOS" />
+		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
+	</ItemGroup>
 
 	<Import Project="..\Kernel\Kernel.projitems" Label="Shared" />
 
@@ -54,6 +60,7 @@
 		<Exec Command="&quot;$(MSBuildStartupDirectory)\Tools\7-Zip\7z.exe&quot; a &quot;$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar&quot; &quot;$(MSBuildStartupDirectory)\Ramdisk\*"></Exec>
 		<Exec WorkingDirectory="$(MSBuildStartupDirectory)\Tools\" Command="&quot;$(MSBuildStartupDirectory)\Tools\nasm.exe&quot; -fbin &quot;$(MSBuildStartupDirectory)\Tools\Trampoline.asm&quot; -o &quot;$(MSBuildStartupDirectory)\Tools\trampoline.o&quot;"></Exec>
 		<Exec WorkingDirectory="$(MSBuildStartupDirectory)\Tools\" Command="&quot;$(MSBuildStartupDirectory)\Tools\nasm.exe&quot; -fbin &quot;$(MSBuildStartupDirectory)\Tools\EntryPoint.asm&quot; -o &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o&quot;"></Exec>
+		<Exec Command="cmd.exe /c echo !!! $(MSBuildProjectDirectory)@$(NativeOutputPath)@$(TargetName)@$(NativeBinaryExt)"></Exec>
 		<Exec Command="cmd.exe /c copy /b &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o&quot;+&quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)&quot; &quot;$(MSBuildStartupDirectory)\Tools\grub2\boot\kernel.bin&quot;"></Exec>
 		<Delete Files="$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o"></Delete>
 		<Delete Files="$(MSBuildStartupDirectory)\Tools\trampoline.o"></Delete>

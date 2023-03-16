@@ -28,14 +28,11 @@ namespace System
         public Object() { }
         ~Object() { }
 
-        public virtual bool Equals(object o)
-            => false;
+        public virtual bool Equals(object o) => false;
 
-        public virtual int GetHashCode()
-            => 0;
+        public virtual int GetHashCode() => 0;
 
-        public virtual string ToString()
-            => "System.Object";
+        public virtual string ToString() => "System.Object";
 
         public virtual void Dispose()
         {
@@ -43,7 +40,7 @@ namespace System
             free(Unsafe.As<object, IntPtr>(ref obj));
         }
 
-        public static implicit operator bool(object obj)=> obj != null;
+        public static implicit operator bool(object obj) => obj != null;
 
         public static implicit operator IntPtr(object obj) => Unsafe.As<object, IntPtr>(ref obj);
 

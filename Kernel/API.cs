@@ -1,16 +1,15 @@
-using Internal.Runtime.CompilerServices;
 using MOOS.Driver;
 using MOOS.FS;
 using MOOS.Misc;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime;
-using static IDT;
-using static Internal.Runtime.CompilerHelpers.InteropHelpers;
+using Internal.Runtime.CompilerServices;
 
 #if HasGUI
+
 using MOOS.GUI;
+
 #endif
 
 namespace MOOS
@@ -19,74 +18,49 @@ namespace MOOS
     {
         public static unsafe void* HandleSystemCall(string name)
         {
-            switch (name)
+            void* api = name switch
             {
-                case "SayHello":
-                    return (delegate*<void>)&SayHello;
-                case "WriteLine":
-                    return (delegate*<void>)&API_WriteLine;
-                case "DebugWriteLine":
-                    return (delegate*<void>)&API_DebugWriteLine;
-                case "Allocate":
-                    return (delegate*<ulong, nint>)&API_Allocate;
-                case "Reallocate":
-                    return (delegate*<nint, ulong, nint>)&API_Reallocate;
-                case "Free":
-                    return (delegate*<nint, ulong>)&API_Free;
-                case "Sleep":
-                    return (delegate*<ulong, void>)&API_Sleep;
-                case "GetTick":
-                    return (delegate*<ulong>)&API_GetTick;
-                case "ReadAllBytes":
-                    return (delegate*<string, ulong*, byte**, void>)&API_ReadAllBytes;
-                case "Write":
-                    return (delegate*<char, void>)&API_Write;
-                case "DebugWrite":
-                    return (delegate*<char, void>)&API_DebugWrite;
-                case "SwitchToConsoleMode":
-                    return (delegate*<void>)&API_SwitchToConsoleMode;
-                case "DrawPoint":
-                    return (delegate*<int, int, uint, void>)&API_DrawPoint;
-                case "Lock":
-                    return (delegate*<void>)&API_Lock;
-                case "Unlock":
-                    return (delegate*<void>)&API_Unlock;
-                case "Clear":
-                    return (delegate*<uint, void>)&API_Clear;
-                case "Update":
-                    return (delegate*<void>)&API_Update;
-                case "Width":
-                    return (delegate*<uint>)&API_Width;
-                case "Height":
-                    return (delegate*<uint>)&API_Height;
-                case "WriteString0":
-                    return (delegate*<string, void>)&API_WriteString;
-                case "GetTime":
-                    return (delegate*<ulong>)&API_GetTime;
-                case "DrawImage":
-                    return (delegate*<int, int, Image, void>)&API_DrawImage;
-                case "Error":
-                    return (delegate*<string, bool, void>)&API_Error;
-                case "StartThread":
-                    return (delegate*<delegate*<void>, void>)&API_StartThread;
+                "SayHello" => (delegate*<void>)&SayHello,
+                "WriteLine" => (delegate*<void>)&API_WriteLine,
+                "DebugWriteLine" => (delegate*<void>)&API_DebugWriteLine,
+                "Allocate" => (delegate*<ulong, nint>)&API_Allocate,
+                "Reallocate" => (delegate*<nint, ulong, nint>)&API_Reallocate,
+                "Free" => (delegate*<nint, ulong>)&API_Free,
+                "Sleep" => (delegate*<ulong, void>)&API_Sleep,
+                "GetTick" => (delegate*<ulong>)&API_GetTick,
+                "ReadAllBytes" => (delegate*<string, ulong*, byte**, void>)&API_ReadAllBytes,
+                "Write" => (delegate*<char, void>)&API_Write,
+                "DebugWrite" => (delegate*<char, void>)&API_DebugWrite,
+                "SwitchToConsoleMode" => (delegate*<void>)&API_SwitchToConsoleMode,
+                "DrawPoint" => (delegate*<int, int, uint, void>)&API_DrawPoint,
+                "Lock" => (delegate*<void>)&API_Lock,
+                "Unlock" => (delegate*<void>)&API_Unlock,
+                "Clear" => (delegate*<uint, void>)&API_Clear,
+                "Update" => (delegate*<void>)&API_Update,
+                "Width" => (delegate*<uint>)&API_Width,
+                "Height" => (delegate*<uint>)&API_Height,
+                "WriteString" => (delegate*<string, void>)&API_WriteString,
+                "GetTime" => (delegate*<ulong>)&API_GetTime,
+                "DrawImage" => (delegate*<int, int, Image, void>)&API_DrawImage,
+                "Error" => (delegate*<string, bool, void>)&API_Error,
+                "StartThread" => (delegate*<delegate*<void>, void>)&API_StartThread,
 #if Kernel && HasGUI
-                case "CreateWindow":
-                    return (delegate*<int, int, int, int, string, IntPtr>)&API_CreateWindow;
-                case "GetWindowScreenBuf":
-                    return (delegate*<IntPtr, IntPtr>)&API_GetWindowScreenBuf;
-                case "BindOnKeyChangedHandler":
-                    return (delegate*<EventHandler<ConsoleKeyInfo>, void>)&API_BindOnKeyChangedHandler;
+                "CreateWindow" => (delegate*<int, int, int, int, string, IntPtr>)&API_CreateWindow,
+                "GetWindowScreenBuf" => (delegate*<IntPtr, IntPtr>)&API_GetWindowScreenBuf,
+                "BindOnKeyChangedHandler" => (delegate*<EventHandler<ConsoleKeyInfo>, void>)&API_BindOnKeyChangedHandler,
 #endif
-                case "Calloc":
-                    return (delegate*<ulong, ulong, void*>)&API_Calloc;
-                case "SndWrite":
-                    return (delegate*<byte*, int, int>)&API_SndWrite;
-            }
-            Panic.Error($"System call \"{name}\" is not found");
-            return null;
+                "Calloc" => (delegate*<ulong, ulong, void*>)&API_Calloc,
+                "SndWrite" => (delegate*<byte*, int, int>)&API_SndWrite,
+                _ => null
+            };
+
+            if (api == null) Panic.Error($"System call \"{name}\" is not found");
+
+            return api;
         }
 
 #if Kernel && HasGUI
+
         public static IntPtr API_CreateWindow(int X, int Y, int Width, int Height, string Title)
         {
             PortableApp papp = new PortableApp(X, Y, Width, Height);
@@ -99,6 +73,7 @@ namespace MOOS
             PortableApp papp = Unsafe.As<IntPtr, PortableApp>(ref handle);
             return papp.ScreenBuf;
         }
+
 #endif
 
         public static int API_SndWrite(byte* buffer, int len)
@@ -114,7 +89,6 @@ namespace MOOS
         public static void API_BindOnKeyChangedHandler(EventHandler<ConsoleKeyInfo> handler)
         {
             Keyboard.OnKeyChanged = handler;
-
         }
 
         public static void API_StartThread(delegate*<void> func)
