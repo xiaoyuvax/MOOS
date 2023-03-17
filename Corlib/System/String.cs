@@ -1,306 +1,324 @@
 using System.Collections.Generic;
+
 using System.Runtime.CompilerServices;
+
+#if !BFLAT
+
+using Internal.Runtime.CompilerServices;
+
+#endif
+
 using System.Runtime.InteropServices;
 using Internal.Runtime.CompilerHelpers;
 
 namespace System
 {
-	public sealed unsafe class String
-	{
-		[Intrinsic]
-		public static readonly string Empty = "";
+    public sealed unsafe class String
+    {
+        [Intrinsic]
+        public static readonly string Empty = "";
 
+        // The layout of the string type is a contract with the compiler.
+        private int _length;
 
-		// The layout of the string type is a contract with the compiler.
-		private int _length;
-		internal char _firstChar;
+        internal char _firstChar;
 
+        public int Length
+        {
+            [Intrinsic]
+            get => _length;
+            set => _length = value;
+        }
 
-		public int Length
-		{
-			[Intrinsic]
-			get => _length;
-			set => _length = value;
-		}
+        public unsafe char this[int index]
+        {
+            [Intrinsic]
+            get => Unsafe.Add(ref _firstChar, index);
 
-		public unsafe char this[int index]
-		{
-			[Intrinsic]
-			get => Unsafe.Add(ref _firstChar, index);
-
-			set
-			{
-				fixed (char* p = &_firstChar)
-				{
-					p[index] = value;
-				}
-			}
-		}
-
+            set
+            {
+                fixed (char* p = &_firstChar)
+                {
+                    p[index] = value;
+                }
+            }
+        }
 
 #pragma warning disable CS0824 // Constructor is marked external
-		public extern unsafe String(char* ptr);
-		public extern String(IntPtr ptr);
-		public extern String(char[] buf);
-		public extern unsafe String(char* ptr, int index, int length);
-		public extern unsafe String(char[] buf, int index, int length);
+
+        public extern unsafe String(char* ptr);
+
+        public extern String(IntPtr ptr);
+
+        public extern String(char[] buf);
+
+        public extern unsafe String(char* ptr, int index, int length);
+
+        public extern unsafe String(char[] buf, int index, int length);
+
 #pragma warning restore CS0824 // Constructor is marked external
 
-
-		public static unsafe string FromASCII(nint ptr, int length)
-		{
-			byte* p = (byte*)ptr;
-			char* newp = stackalloc char[length];
-			for(int i = 0; i < length; i++)
+        public static unsafe string FromASCII(nint ptr, int length)
+        {
+            byte* p = (byte*)ptr;
+            char* newp = stackalloc char[length];
+            for (int i = 0; i < length; i++)
             {
-				newp[i] = (char)p[i];
+                newp[i] = (char)p[i];
             }
-			return new string(newp, 0, length);
-		}
+            return new string(newp, 0, length);
+        }
 
-		private static unsafe string Ctor(char* ptr)
-		{
-			int i = 0;
+        private static unsafe string Ctor(char* ptr)
+        {
+            int i = 0;
 
-			while (ptr[i++] != '\0')
-			{ }
+            while (ptr[i++] != '\0')
+            { }
 
-			return Ctor(ptr, 0, i - 1);
-		}
-		private static unsafe string Ctor(IntPtr ptr)
-		{
-			return Ctor((char*)ptr);
-		}
-		private static unsafe string Ctor(char[] buf)
-		{
-			fixed (char* _buf = buf)
-			{
-				return Ctor(_buf, 0, buf.Length);
-			}
-		}
-		private static unsafe string Ctor(char* ptr, int index, int length)
-		{
-			EETypePtr et = EETypePtr.EETypePtrOf<string>();
+            return Ctor(ptr, 0, i - 1);
+        }
 
-			char* start = ptr + index;
-			object data = StartupCodeHelpers.RhpNewArray(et.Value, length);
-			string s = Unsafe.As<object, string>(ref data);
+        private static unsafe string Ctor(IntPtr ptr)
+        {
+            return Ctor((char*)ptr);
+        }
 
-			fixed (char* c = &s._firstChar)
-			{
-				memcpy((byte*)c, (byte*)start, (ulong)length * sizeof(char));
-				c[length] = '\0';
-			}
+        private static unsafe string Ctor(char[] buf)
+        {
+            fixed (char* _buf = buf)
+            {
+                return Ctor(_buf, 0, buf.Length);
+            }
+        }
 
-			return s;
-		}
-		[DllImport("*")]
-		private static extern unsafe void memcpy(byte* dest, byte* src, ulong count);
+        private static unsafe string Ctor(char* ptr, int index, int length)
+        {
+            EETypePtr et = EETypePtr.EETypePtrOf<string>();
 
-		public int LastIndexOf(char j)
-		{
-			for (int i = Length - 1; i >= 0; i--)
-			{
-				if (this[i] == j)
-				{
-					return i;
-				}
-			}
+            char* start = ptr + index;
+            object data = StartupCodeHelpers.RhpNewArray(et.Value, length);
+            string s = Unsafe.As<object, string>(ref data);
 
-			return -1;
-		}
+            fixed (char* c = &s._firstChar)
+            {
+                memcpy((byte*)c, (byte*)start, (ulong)length * sizeof(char));
+                c[length] = '\0';
+            }
 
-		private static unsafe string Ctor(char[] ptr, int index, int length)
-		{
-			fixed (char* _ptr = ptr)
-			{
-				return Ctor(_ptr, index, length);
-			}
-		}
+            return s;
+        }
 
-		public override string ToString()
-		{
-			return this;
-		}
+        [DllImport("*")]
+        private static extern unsafe void memcpy(byte* dest, byte* src, ulong count);
 
-		public override bool Equals(object obj)
-		{
+        public int LastIndexOf(char j)
+        {
+            for (int i = Length - 1; i >= 0; i--)
+            {
+                if (this[i] == j)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static unsafe string Ctor(char[] ptr, int index, int length)
+        {
+            fixed (char* _ptr = ptr)
+            {
+                return Ctor(_ptr, index, length);
+            }
+        }
+
+        public override string ToString()
+        {
+            return this;
+        }
+
+        public override bool Equals(object obj)
+        {
 #pragma warning disable IDE0038 // Use pattern matching
-			return obj is string && Equals((string)obj);
+            return obj is string && Equals((string)obj);
 #pragma warning restore IDE0038 // Use pattern matching
-		}
+        }
 
-		public bool Equals(string val)
-		{
-			if (Length != val.Length)
-			{
-				return false;
-			}
+        public bool Equals(string val)
+        {
+            if (Length != val.Length)
+            {
+                return false;
+            }
 
-			for (int i = 0; i < Length; i++)
-			{
-				if (this[i] != val[i])
-				{
-					return false;
-				}
-			}
+            for (int i = 0; i < Length; i++)
+            {
+                if (this[i] != val[i])
+                {
+                    return false;
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public static bool operator ==(string a, string b)
-		{
-			return a.Equals(b);
-		}
+        public static bool operator ==(string a, string b)
+        {
+            return a.Equals(b);
+        }
 
-		public static bool operator !=(string a, string b)
-		{
-			return !a.Equals(b);
-		}
+        public static bool operator !=(string a, string b)
+        {
+            return !a.Equals(b);
+        }
 
-		public override int GetHashCode()
-		{
-			return 0;
-		}
+        public override int GetHashCode()
+        {
+            return 0;
+        }
 
-		public static string Concat(string a, string b)
-		{
-			int Length = a.Length + b.Length;
-			char* ptr = stackalloc char[Length];
-			int currentIndex = 0;
-			for (int i = 0; i < a.Length; i++)
-			{
-				ptr[currentIndex] = a[i];
-				currentIndex++;
-			}
-			for (int i = 0; i < b.Length; i++)
-			{
-				ptr[currentIndex] = b[i];
-				currentIndex++;
-			}
-			return new string(ptr, 0, Length);
-		}
+        public static string Concat(string a, string b)
+        {
+            int Length = a.Length + b.Length;
+            char* ptr = stackalloc char[Length];
+            int currentIndex = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                ptr[currentIndex] = a[i];
+                currentIndex++;
+            }
+            for (int i = 0; i < b.Length; i++)
+            {
+                ptr[currentIndex] = b[i];
+                currentIndex++;
+            }
+            return new string(ptr, 0, Length);
+        }
 
-		public int IndexOf(char j)
-		{
-			for (int i = 0; i < Length; i++)
-			{
-				if (this[i] == j)
-				{
-					return i;
-				}
-			}
+        public int IndexOf(char j)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                if (this[i] == j)
+                {
+                    return i;
+                }
+            }
 
-			return -1;
-		}
+            return -1;
+        }
 
-		public static string Concat(string a, string b, string c)
-		{
-			string p1 = a + b;
-			string p2 = p1 + c;
-			p1.Dispose();
-			return p2;
-		}
+        public static string Concat(string a, string b, string c)
+        {
+            string p1 = a + b;
+            string p2 = p1 + c;
+            p1.Dispose();
+            return p2;
+        }
 
-		public static string Concat(string a, string b, string c, string d)
-		{
-			string p1 = a + b;
-			string p2 = p1 + c;
-			string p3 = p2 + d;
-			p1.Dispose();
-			p2.Dispose();
-			return p3;
-		}
+        public static string Concat(string a, string b, string c, string d)
+        {
+            string p1 = a + b;
+            string p2 = p1 + c;
+            string p3 = p2 + d;
+            p1.Dispose();
+            p2.Dispose();
+            return p3;
+        }
 
-		public static string Concat(params string[] vs)
-		{
-			string s = "";
-			for (int i = 0; i < vs.Length; i++)
-			{
-				string tmp = s + vs[i];
-				s.Dispose();
-				s = tmp;
-			}
-			vs.Dispose();
-			return s;
-		}
-		public static string Format(string format, params object[] args)
-		{
-			lock (format)
-			{
-				string res = Empty;
-				for (int i = 0; i < format.Length; i++)
-				{
-					string chr;
-					if ((i + 2) < format.Length && format[i] == '{' && format[i + 2] == '}')
-					{
-						chr = args[format[i + 1] - 0x30].ToString();
-						i += 2;
-					} else
-					{
-						chr = format[i].ToString();
-					}
-					string str = res + chr;
-					chr.Dispose();
-					res.Dispose();
-					res = str;
-				}
+        public static string Concat(params string[] vs)
+        {
+            string s = "";
+            for (int i = 0; i < vs.Length; i++)
+            {
+                string tmp = s + vs[i];
+                s.Dispose();
+                s = tmp;
+            }
+            vs.Dispose();
+            return s;
+        }
 
-				for (int i = 0; i < args.Length; i++)
-				{
-					args[i].Dispose();
-				}
+        public static string Format(string format, params object[] args)
+        {
+            lock (format)
+            {
+                string res = Empty;
+                for (int i = 0; i < format.Length; i++)
+                {
+                    string chr;
+                    if ((i + 2) < format.Length && format[i] == '{' && format[i + 2] == '}')
+                    {
+                        chr = args[format[i + 1] - 0x30].ToString();
+                        i += 2;
+                    }
+                    else
+                    {
+                        chr = format[i].ToString();
+                    }
+                    string str = res + chr;
+                    chr.Dispose();
+                    res.Dispose();
+                    res = str;
+                }
 
-				args.Dispose();
-				return res;
-			}
-		}
+                for (int i = 0; i < args.Length; i++)
+                {
+                    args[i].Dispose();
+                }
 
-		public string Remove(int startIndex)
-		{
-			return Substring(0, startIndex);
-		}
+                args.Dispose();
+                return res;
+            }
+        }
 
-		public string[] Split(char chr)
-		{
-			List<string> strings = new();
-			string tmp = string.Empty;
-			for (int i = 0; i < Length; i++)
-			{
-				if (this[i] == chr)
-				{
-					strings.Add(tmp);
-					tmp = string.Empty;
-				} else
-				{
-					tmp += this[i];
-				}
+        public string Remove(int startIndex)
+        {
+            return Substring(0, startIndex);
+        }
 
-				if (i == (Length - 1))
-				{
-					strings.Add(tmp);
-					tmp = string.Empty;
-				}
-			}
-			return strings.ToArray();
-		}
+        public string[] Split(char chr)
+        {
+            List<string> strings = new();
+            string tmp = string.Empty;
+            for (int i = 0; i < Length; i++)
+            {
+                if (this[i] == chr)
+                {
+                    strings.Add(tmp);
+                    tmp = string.Empty;
+                }
+                else
+                {
+                    tmp += this[i];
+                }
 
-		public unsafe string Substring(int startIndex)
-		{
-			if ((Length == 0) && (startIndex == 0))
-			{
-				return Empty;
-			}
-			// Usually one uses the extension method with non-null values
-			// so all we need to worry about is startIndex compared to value.Length.
-			/*
+                if (i == (Length - 1))
+                {
+                    strings.Add(tmp);
+                    tmp = string.Empty;
+                }
+            }
+            return strings.ToArray();
+        }
+
+        public unsafe string Substring(int startIndex)
+        {
+            if ((Length == 0) && (startIndex == 0))
+            {
+                return Empty;
+            }
+            // Usually one uses the extension method with non-null values
+            // so all we need to worry about is startIndex compared to value.Length.
+            /*
 			if ((startIndex < 0) || (startIndex >= Length))
 			{
 				ThrowHelpers.ThrowArgumentOutOfRangeException("startIndex");
 			}
 			*/
 
-			/*
+            /*
 			string substring = "";
 			for (int i = startIndex; i < Length; i++)
 			{
@@ -308,27 +326,28 @@ namespace System
 			}
 			return substring;
 			*/
-			fixed (char* ptr = this)
-			{
-				return new string(ptr, startIndex, Length - startIndex);
-			}
-		}
-		public unsafe string Substring(int startIndex, int endIndex)
-		{
-			if ((Length == 0) && (startIndex == 0))
-			{
-				return Empty;
-			}
-			// Usually one uses the extension method with non-null values
-			// so all we need to worry about is startIndex compared to value.Length.
-			/*
+            fixed (char* ptr = this)
+            {
+                return new string(ptr, startIndex, Length - startIndex);
+            }
+        }
+
+        public unsafe string Substring(int startIndex, int endIndex)
+        {
+            if ((Length == 0) && (startIndex == 0))
+            {
+                return Empty;
+            }
+            // Usually one uses the extension method with non-null values
+            // so all we need to worry about is startIndex compared to value.Length.
+            /*
 			if ((startIndex < 0) || (startIndex >= Length) || (endIndex >= Length) || (endIndex <= startIndex))
 			{
 				ThrowHelpers.ThrowArgumentOutOfRangeException("startIndex");
 			}
 			*/
 
-			/*
+            /*
 			string substring = "";
 			for (int i = startIndex; i < endIndex; i++)
 			{
@@ -336,102 +355,108 @@ namespace System
 			}
 			return substring;
 			*/
-			fixed(char* ptr = this)
+            fixed (char* ptr = this)
             {
-				return new string(ptr, startIndex, endIndex - startIndex);
+                return new string(ptr, startIndex, endIndex - startIndex);
             }
-		}
+        }
+
 #nullable enable
-		public static bool IsNullOrEmpty(string? value)
+
+        public static bool IsNullOrEmpty(string? value)
 #nullable disable
-		{
-			return value == null || value.Length == 0;
-		}
+        {
+            return value == null || value.Length == 0;
+        }
+
 #nullable enable
-		public static bool IsNullOrWhiteSpace(string? value)
+
+        public static bool IsNullOrWhiteSpace(string? value)
 #nullable disable
-		{
-			if (value == null)
-			{
-				value.Dispose();
-				return true;
-			}
-
-			for (int i = 0; i < value.Length; i++)
-			{
-				if (!char.IsWhiteSpace(value[i]))
-				{
-					value.Dispose();
-					return false;
-				}
-			}
-			value.Dispose();
-			return true;
-		}
-
-		public bool EndsWith(char value)
-		{
-			int thisLen = Length;
-			if (thisLen != 0)
-			{
-				if (this[thisLen - 1] == value)
-				{
-					thisLen.Dispose();
-					return true;
-				}
-			}
-			thisLen.Dispose();
-			return false;
-		}
-
-		public bool EndsWith(string value)
-		{
-			if (value.Length > Length)
-			{
-				return false;
-			}
-
-			if (value == this)
-			{
-				return true;
-			}
-
-			for (int i = 0; i < value.Length; i++)
-			{
-				if (value[i] != this[Length - value.Length + i])
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public string ToUpper()
-		{
-			fixed (char* pthis = this)
-			{
-				string output = new string(pthis, 0, this.Length);
-				for (int i = 0; i < this.Length; i++)
-				{
-					output[i] = pthis[i].ToUpper();
-				}
-				return output;
-			}
-		}
-		public string ToLower()
-		{
-			fixed(char* pthis = this)
+        {
+            if (value == null)
             {
-				string output = new string(pthis, 0, this.Length);
-				for(int i = 0; i < this.Length; i++)
+                value.Dispose();
+                return true;
+            }
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!char.IsWhiteSpace(value[i]))
                 {
-					output[i] = pthis[i].ToLower();
+                    value.Dispose();
+                    return false;
                 }
-				return output;
-			}
-		}
-	}
+            }
+            value.Dispose();
+            return true;
+        }
+
+        public bool EndsWith(char value)
+        {
+            int thisLen = Length;
+            if (thisLen != 0)
+            {
+                if (this[thisLen - 1] == value)
+                {
+                    thisLen.Dispose();
+                    return true;
+                }
+            }
+            thisLen.Dispose();
+            return false;
+        }
+
+        public bool EndsWith(string value)
+        {
+            if (value.Length > Length)
+            {
+                return false;
+            }
+
+            if (value == this)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] != this[Length - value.Length + i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public string ToUpper()
+        {
+            fixed (char* pthis = this)
+            {
+                string output = new string(pthis, 0, this.Length);
+                for (int i = 0; i < this.Length; i++)
+                {
+                    output[i] = pthis[i].ToUpper();
+                }
+                return output;
+            }
+        }
+
+        public string ToLower()
+        {
+            fixed (char* pthis = this)
+            {
+                string output = new string(pthis, 0, this.Length);
+                for (int i = 0; i < this.Length; i++)
+                {
+                    output[i] = pthis[i].ToLower();
+                }
+                return output;
+            }
+        }
+    }
 }
+
 /*
  * TODO: .NET String
 ####################
@@ -460,7 +485,6 @@ namespace System
 		, IComparable<String>, IEnumerable<char>, IEquatable<String>
 #endif
 	{
-
 		private int m_stringLength;
 
 		private char m_firstChar;
@@ -495,7 +519,6 @@ namespace System
 				MOOS.Misc.Panic.Error("Argument Null Exception: values [String.Join]");
 			}
 
-
 			if (values.Length == 0 || values[0] == null)
 			{
 				return String.Empty;
@@ -525,7 +548,6 @@ namespace System
 			}
 			return result;
 		}
-
 
 		private const int charPtrAlignConst = 1;
 		private const int alignConst = 3;
@@ -584,7 +606,7 @@ namespace System
 			jointLength += (count - 1) * separator.Length;
 
 			// Note that we may not catch all overflows with this check (since we could have wrapped around the 4gb range any number of times
-			// and landed back in the positive range.) The input array might be modifed from other threads, 
+			// and landed back in the positive range.) The input array might be modifed from other threads,
 			// so we have to do an overflow check before each append below anyway. Those overflows will get caught down there.
 			if ((jointLength < 0) || ((jointLength + 1) < 0))
 			{
@@ -656,7 +678,7 @@ namespace System
 			}
 		}
 
-		// This is a helper method for the security team.  They need to uppercase some strings (guaranteed to be less 
+		// This is a helper method for the security team.  They need to uppercase some strings (guaranteed to be less
 		// than 0x80) before security is fully initialized.  Without security initialized, we can't grab resources (the nlp's)
 		// from the assembly.  This provides a workaround for that problem and should NOT be used anywhere else.
 		//
@@ -672,7 +694,6 @@ namespace System
 			string strOut = FastAllocateString(length);
 			fixed (char* inBuff = &strIn.m_firstChar, outBuff = &strOut.m_firstChar)
 			{
-
 				for (int i = 0; i < length; i++)
 				{
 					int c = inBuff[i];
@@ -792,7 +813,7 @@ namespace System
 					int charA = *a;
 					int charB = *b;
 
-					// Ordinal equals or lowercase equals if the result ends up in the a-z range 
+					// Ordinal equals or lowercase equals if the result ends up in the a-z range
 					if (charA == charB ||
 					   ((charA | 0x20) == (charB | 0x20) &&
 						  (uint)((charA | 0x20) - 'a') <= 'z' - 'a'))
@@ -876,9 +897,9 @@ namespace System
 				}
 
 				// now go back to slower code path and do comparison on 4 bytes one time.
-				// Following code also take advantage of the fact strings will 
+				// Following code also take advantage of the fact strings will
 				// use even numbers of characters (runtime will have a extra zero at the end.)
-				// so even if length is 1 here, we can still do the comparsion.  
+				// so even if length is 1 here, we can still do the comparsion.
 				while (length > 0)
 				{
 					if (*(int*)a != *(int*)b)
@@ -1028,7 +1049,6 @@ namespace System
 				ThrowHelpers.ThrowArgumentOutOfRangeException("destinationIndex", Environment.GetResourceString("ArgumentOutOfRange_IndexCount"));
 			}
 
-
 			// Note: fixed does not like empty arrays
 			if (count > 0)
 			{
@@ -1072,7 +1092,6 @@ namespace System
 				ThrowHelpers.ThrowArgumentOutOfRangeException("length", Environment.GetResourceString("ArgumentOutOfRange_Index"));
 			}
 
-			
 			char[] chars = new char[length];
 			if (length > 0)
 			{
@@ -1112,7 +1131,6 @@ namespace System
 		// they will return the same hash code.
 		public override int GetHashCode()
 		{
-
 #if FEATURE_RANDOMIZED_STRING_HASHING
 			if(HashHelpers.s_UseRandomizedStringHashing)
 			{
@@ -1314,8 +1332,8 @@ namespace System
 		}
 
 		// Note a few special case in this function:
-		//     If there is no separator in the string, a string array which only contains 
-		//     the original string will be returned regardless of the count. 
+		//     If there is no separator in the string, a string array which only contains
+		//     the original string will be returned regardless of the count.
 		//
 
 		private string[] InternalSplitKeepEmptyEntries(int[] sepList, int[] lengthList, int numReplaces, int count)
@@ -1345,18 +1363,16 @@ namespace System
 				//We had a separator character at the end of a string.  Rather than just allowing
 				//a null character, we'll replace the last element in the array with an empty string.
 				splitStrings[arrIndex] = String.Empty;
-
 			}
 
 			return splitStrings;
 		}
 
-
-		// This function will not keep the Empty String 
+		// This function will not keep the Empty String
 		private string[] InternalSplitOmitEmptyEntries(int[] sepList, int[] lengthList, int numReplaces, int count)
 		{
-			// Allocate array to hold items. This array may not be 
-			// filled completely in this function, we will create a 
+			// Allocate array to hold items. This array may not be
+			// filled completely in this function, we will create a
 			// new array and copy string references to that new array.
 
 			int maxItems = (numReplaces < count) ? (numReplaces + 1) : count;
@@ -1382,7 +1398,6 @@ namespace System
 					break;
 				}
 			}
-
 
 			//Handle the last string at the end of the array if there is one.
 			if (currIndex < Length)
@@ -1503,7 +1518,6 @@ namespace System
 		//
 		public string Substring(int startIndex, int length)
 		{
-
 			//Bounds Checking.
 			if (startIndex < 0)
 			{
@@ -1546,7 +1560,6 @@ namespace System
 			return result;
 		}
 
-
 		// Removes a string of characters from the ends of this string.
 		public string Trim(params char[] trimChars)
 		{
@@ -1559,18 +1572,16 @@ namespace System
 			return null == trimChars || trimChars.Length == 0 ? TrimHelper(TrimHead) : TrimHelper(trimChars, TrimHead);
 		}
 
-
 		// Removes a string of characters from the end of this string.
 		public string TrimEnd(params char[] trimChars)
 		{
 			return null == trimChars || trimChars.Length == 0 ? TrimHelper(TrimTail) : TrimHelper(trimChars, TrimTail);
 		}
 
-
 		// Creates a new string with the characters copied in from ptr. If
 		// ptr is null, a 0-length string (like String.Empty) is returned.
 		//
-		
+
 #pragma warning disable CS0824 // Constructor is marked external
 		public extern unsafe String(char* ptr);
 		public extern String(IntPtr ptr);
@@ -1578,7 +1589,6 @@ namespace System
 		public extern unsafe String(char* ptr, int index, int length);
 		public extern unsafe String(char[] buf, int index, int length);
 #pragma warning restore CS0824 // Constructor is marked external
-
 
 		internal static string FastAllocateString(int length)
 		{
@@ -1880,7 +1890,6 @@ namespace System
 			return CultureInfo.CurrentCulture.CompareInfo.Compare(strA, strB, CompareOptions.None);
 		}
 
-
 		// Provides a culture-correct string comparison. strA is compared to strB
 		// to determine whether it is lexicographically less, equal, or greater, and then a
 		// negative integer, 0, or a positive integer is returned; respectively.
@@ -1894,8 +1903,7 @@ namespace System
 				: CultureInfo.CurrentCulture.CompareInfo.Compare(strA, strB, CompareOptions.None);
 		}
 
-
-		// Provides a more flexible function for string comparision. See StringComparison 
+		// Provides a more flexible function for string comparision. See StringComparison
 		// for meaning of different comparisonType.
 		[Pure]
 		[System.Security.SecuritySafeCritical]  // auto-generated
@@ -1954,14 +1962,13 @@ namespace System
 					{
 						return CompareOrdinalIgnoreCaseHelper(strA, strB);
 					}
-					// Take the slow path.                
+					// Take the slow path.
 					return TextInfo.CompareOrdinalIgnoreCase(strA, strB);
 
 				default:
 					throw new NotSupportedException(Environment.GetResourceString("NotSupported_StringComparison"));
 			}
 		}
-
 
 		// Provides a culture-correct string comparison. strA is compared to strB
 		// to determine whether it is lexicographically less, equal, or greater, and then a
@@ -1978,8 +1985,6 @@ namespace System
 
 			return culture.CompareInfo.Compare(strA, strB, options);
 		}
-
-
 
 		// Provides a culture-correct string comparison. strA is compared to strB
 		// to determine whether it is lexicographically less, equal, or greater, and then a
@@ -2028,7 +2033,6 @@ namespace System
 			}
 			return CultureInfo.CurrentCulture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.None);
 		}
-
 
 		// Determines whether two string regions match.  The substring of strA beginning
 		// at indexA of length count is compared with the substring of strB
@@ -2098,7 +2102,6 @@ namespace System
 				? culture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.IgnoreCase)
 				: culture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.None);
 		}
-
 
 		// Determines whether two string regions match.  The substring of strA beginning
 		// at indexA of length length is compared with the substring of strB
@@ -2226,7 +2229,7 @@ namespace System
 					return CultureInfo.InvariantCulture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.IgnoreCase);
 
 				case StringComparison.Ordinal:
-					// 
+					//
 					return nativeCompareOrdinalEx(strA, indexA, strB, indexB, length);
 
 				case StringComparison.OrdinalIgnoreCase:
@@ -2235,14 +2238,13 @@ namespace System
 				default:
 					throw new ArgumentException(Environment.GetResourceString("NotSupported_StringComparison"));
 			}
-
 		}
 
 		// Compares this object to another object, returning an integer that
 		// indicates the relationship. This method returns a value less than 0 if this is less than value, 0
 		// if this is equal to value, or a value greater than 0
 		// if this is greater than value.  Strings are considered to be
-		// greater than all non-String objects.  Note that this means sorted 
+		// greater than all non-String objects.  Note that this means sorted
 		// arrays would contain nulls, other objects, then Strings in that order.
 		//
 		[Pure]
@@ -2293,10 +2295,9 @@ namespace System
 				return strA.m_firstChar - strB.m_firstChar;
 			}
 
-			// 
+			//
 			return CompareOrdinalHelper(strA, strB);
 		}
-
 
 		// Compares strA and strB using an ordinal (code-point) comparison.
 		//
@@ -2317,7 +2318,6 @@ namespace System
 			return nativeCompareOrdinalEx(strA, indexA, strB, indexB, length);
 		}
 
-
 		[Pure]
 		public bool Contains(string value)
 		{
@@ -2328,7 +2328,7 @@ namespace System
 		//
 		// The case-sensitive and culture-sensitive option is set by options,
 		// and the default culture is used.
-		//        
+		//
 		[Pure]
 		public bool EndsWith(string value)
 		{
@@ -2419,7 +2419,6 @@ namespace System
 			return false;
 		}
 
-
 		// Returns the index of the first occurance of value in the current instance.
 		// The search starts at startIndex and runs thorough the next count characters.
 		//
@@ -2461,7 +2460,6 @@ namespace System
 		[ResourceExposure(ResourceScope.None)]
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern int IndexOfAny(char[] anyOf, int startIndex, int count);
-
 
 		// Determines the position within this string of the first occurence of the specified
 		// string, according to the specified search criteria.  The search begins at
@@ -2615,7 +2613,6 @@ namespace System
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern int LastIndexOfAny(char[] anyOf, int startIndex, int count);
 
-
 		// Returns the index of the last occurance of any character in value in the current instance.
 		// The search starts at startIndex and runs to endIndex. [startIndex,endIndex].
 		// The character at position startIndex is included in the search.  startIndex is the larger
@@ -2715,6 +2712,7 @@ namespace System
 
 				case StringComparison.InvariantCultureIgnoreCase:
 					return CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase);
+
 				case StringComparison.Ordinal:
 					return CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, CompareOptions.Ordinal);
 
@@ -2722,6 +2720,7 @@ namespace System
 					return value.IsAscii() && IsAscii()
 						? CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(this, value, startIndex, count, CompareOptions.IgnoreCase)
 						: TextInfo.LastIndexOfStringOrdinalIgnoreCase(this, value, startIndex, count);
+
 				default:
 					throw new ArgumentException(Environment.GetResourceString("NotSupported_StringComparison"), "comparisonType");
 			}
@@ -2752,7 +2751,6 @@ namespace System
 		{
 			return PadHelper(totalWidth, paddingChar, true);
 		}
-
 
 		[System.Security.SecuritySafeCritical]  // auto-generated
 		[ResourceExposure(ResourceScope.None)]
@@ -2891,7 +2889,6 @@ namespace System
 			return this.ToUpper(CultureInfo.CurrentCulture);
 		}
 
-
 		// Creates a copy of this string in upper case.  The culture is set by culture.
 		[Pure]
 		public string ToUpper(CultureInfo culture)
@@ -2905,7 +2902,6 @@ namespace System
 			return culture.TextInfo.ToUpper(this);
 		}
 
-
 		//Creates a copy of this string in upper case based on invariant culture.
 		[Pure]
 		public string ToUpperInvariant()
@@ -2914,7 +2910,6 @@ namespace System
 			Contract.EndContractBlock();
 			return this.ToUpper(CultureInfo.InvariantCulture);
 		}
-
 
 		// Returns this string.
 		public override string ToString()
@@ -2968,7 +2963,6 @@ namespace System
 			return TrimHelper(TrimBoth);
 		}
 
-
 		[System.Security.SecuritySafeCritical]  // auto-generated
 		private string TrimHelper(int trimType)
 		{
@@ -3002,7 +2996,6 @@ namespace System
 
 			return CreateTrimmedString(start, end);
 		}
-
 
 		[System.Security.SecuritySafeCritical]  // auto-generated
 		private string TrimHelper(char[] trimChars, int trimType)
@@ -3055,7 +3048,6 @@ namespace System
 
 			return CreateTrimmedString(start, end);
 		}
-
 
 		[System.Security.SecurityCritical]  // auto-generated
 		private string CreateTrimmedString(int start, int end)
@@ -3115,7 +3107,6 @@ namespace System
 			return result;
 		}
 
-
 		// This method contains the same functionality as StringBuilder Replace. The only difference is that
 		// a new String has to be allocated since Strings are immutable
 
@@ -3164,7 +3155,7 @@ namespace System
 			return result;
 		}
 
-		// a remove that just takes a startindex. 
+		// a remove that just takes a startindex.
 		public string Remove(int startIndex)
 		{
 			if (startIndex < 0)
@@ -3240,7 +3231,6 @@ namespace System
 			return Concat(arg0.ToString(), arg1.ToString(), arg2.ToString());
 		}
 
-
 		public static string Concat(params object[] args)
 		{
 			if (args == null)
@@ -3271,8 +3261,6 @@ namespace System
 			}
 			return ConcatArray(sArgs, totalLength);
 		}
-
-
 
 		[System.Security.SecuritySafeCritical]  // auto-generated
 		public static string Concat(string str0, string str1)

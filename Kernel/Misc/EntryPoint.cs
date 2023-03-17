@@ -1,18 +1,9 @@
 using Internal.Runtime.CompilerHelpers;
-using MOOS;
 using MOOS.Driver;
 using MOOS.FS;
-using MOOS.Graph;
-using MOOS.Misc;
-using MOOS.NET;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Net;
 using System.Runtime;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace MOOS.Misc
 {
@@ -35,7 +26,7 @@ namespace MOOS.Misc
                 Framebuffer.Initialize(info->ScreenWidth, info->ScreenHeight, (uint*)info->PhysBase);
                 Framebuffer.Graphics.Clear(0x0);
             }
-            else 
+            else
             {
                 for (; ; ) Native.Hlt();
             }

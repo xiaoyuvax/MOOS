@@ -5,7 +5,11 @@
 using MOOS.Driver;
 using System;
 using System.Collections.Generic;
+#if BFLAT
 using System.Runtime.CompilerServices;
+#else
+using Internal.Runtime.CompilerServices;
+#endif
 using System.Runtime.InteropServices;
 
 namespace MOOS.Misc

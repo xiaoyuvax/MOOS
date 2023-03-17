@@ -1,4 +1,8 @@
+
 using System.Runtime.CompilerServices;
+#if !BFLAT
+using Internal.Runtime.CompilerServices;
+#endif
 using System.Runtime.InteropServices;
 using Internal.Runtime.CompilerHelpers;
 

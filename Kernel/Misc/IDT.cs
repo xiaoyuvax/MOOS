@@ -2,7 +2,11 @@ using MOOS;
 using MOOS.Driver;
 using MOOS.Misc;
 using System.Runtime;
+#if BFLAT
 using System.Runtime.CompilerServices;
+#else
+using Internal.Runtime.CompilerServices;
+#endif
 using System.Runtime.InteropServices;
 using static Internal.Runtime.CompilerHelpers.InteropHelpers;
 

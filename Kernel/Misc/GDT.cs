@@ -1,4 +1,8 @@
+#if BFLAT
 using System.Runtime.CompilerServices;
+#else
+using Internal.Runtime.CompilerServices;
+#endif
 using System.Runtime.InteropServices;
 
 internal static class GDT

@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.CompilerServices;
 
+#if BFLAT
 namespace System.Runtime.CompilerServices
+#else 
+namespace Internal.Runtime.CompilerServices
+#endif
 {
     public static unsafe class Unsafe
     {

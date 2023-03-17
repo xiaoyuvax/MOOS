@@ -2,7 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+#if BFLAT
 using System.Runtime.CompilerServices;
+#else
+using Internal.Runtime.CompilerServices;
+#endif
 
 namespace Internal.Runtime.CompilerHelpers
 {

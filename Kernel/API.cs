@@ -4,7 +4,11 @@ using MOOS.Misc;
 using System;
 using System.Drawing;
 using System.Runtime;
+#if BFLAT
 using System.Runtime.CompilerServices;
+#else
+using Internal.Runtime.CompilerServices;
+#endif
 
 #if HasGUI
 
