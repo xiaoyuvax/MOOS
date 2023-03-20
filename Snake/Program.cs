@@ -18,12 +18,24 @@ namespace Snake
         [DllImport("Free")]
         public static extern ulong AFree(nint ptr);
 
+        [DllImport("WriteLine")]
+        public static extern void WriteLine();
+
+        [DllImport("ReadAllBytes")]
+        public static extern void ReadAllBytes(string name, out ulong size, out byte* data);
+
+        [DllImport("Write")]
+        public static extern void Write(char c);
+
         [RuntimeExport("Main")]
         public static void Main()
         {
-            Console.WriteLine("Snake.Entry");            
-            //Game.SnakeMain();
+            Console.Setup();
+            Console.WriteLine("Content of Text.txt is: ");
+
+            Game.SnakeMain();
+            for (; ; );
         }
-               
+
     }
 }

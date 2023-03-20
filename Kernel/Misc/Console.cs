@@ -24,6 +24,8 @@ namespace MOOS
         public static char LastKeyChar;
         public static char ThisKeyChar;
 
+        public static void InvokeOnWriteHanlder(char chr) => OnWrite?.Invoke(chr);
+
         internal static void Setup()
         {
             OnWrite = null;

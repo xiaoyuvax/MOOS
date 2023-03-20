@@ -72,6 +72,7 @@ namespace MOOS
                 "ACPITimerSleep" => (delegate*<ulong, void>)&API_ACPITimerSleep,
                 "GetTimerTicks" => (delegate*<ulong>)&API_GetTimerTicks,
                 "NativeHlt" => (delegate*<void>)&API_NativeHlt,
+                "InvokeOnWriteHanlder" => (delegate*<char, void>)&API_InvokeOnWriteHanlder,
                 #endregion System.Console
 
                 _ => null
@@ -105,6 +106,8 @@ namespace MOOS
         public static ulong API_GetTimerTicks() => Timer.Ticks;
 
         public static void API_NativeHlt() => Native.Hlt();
+
+        public static void API_InvokeOnWriteHanlder(char chr) => Console.InvokeOnWriteHanlder(chr);
 
         #endregion System.Console
 

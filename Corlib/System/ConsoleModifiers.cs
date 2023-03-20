@@ -1,7 +1,7 @@
 namespace System
 {
     [Flags]
-    public enum ConsoleModifiers
+    public enum ConsoleModifiers:byte
     {
         None = 0,
         Alt = 1,
