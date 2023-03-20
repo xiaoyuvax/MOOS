@@ -9,7 +9,6 @@ using MOOS.Graph;
 using MOOS.GUI;
 using MOOS.Misc;
 using MOOS.NET;
-using MOOS.GUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +17,7 @@ using System.Net;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Console = MOOS.Console;
 
 unsafe class Program
 {

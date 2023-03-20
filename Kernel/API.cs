@@ -4,10 +4,13 @@ using MOOS.Misc;
 using System;
 using System.Drawing;
 using System.Runtime;
+
 #if BFLAT
 using System.Runtime.CompilerServices;
 #else
+
 using Internal.Runtime.CompilerServices;
+
 #endif
 
 #if HasGUI
@@ -43,7 +46,7 @@ namespace MOOS
                 "Update" => (delegate*<void>)&API_Update,
                 "Width" => (delegate*<uint>)&API_Width,
                 "Height" => (delegate*<uint>)&API_Height,
-                "WriteString0" => (delegate*<string, void>)&API_WriteString,
+                "WriteString" => (delegate*<string, void>)&API_WriteString,
                 "GetTime" => (delegate*<ulong>)&API_GetTime,
                 "DrawImage" => (delegate*<int, int, Image, void>)&API_DrawImage,
                 "Error" => (delegate*<string, bool, void>)&API_Error,
@@ -55,6 +58,22 @@ namespace MOOS
 #endif
                 "Calloc" => (delegate*<ulong, ulong, void*>)&API_Calloc,
                 "SndWrite" => (delegate*<byte*, int, int>)&API_SndWrite,
+
+                #region System.Console
+
+                "WriteFrameBuffer" => (delegate*<char, void>)&API_WriteFramebuffer,
+                "KeyboardCleanKeyInfo" => (delegate*<bool, void>)&API_KeyboardCleanKeyInfo,
+                "KeyboardGetKeyInfo" => (delegate*<ConsoleKeyInfo>)&API_KeyboardGetKeyInfo,
+                "MoveUpFramebuffer" => (delegate*<void>)&API_MoveUpFramebuffer,
+                "UpdateCursorFramebuffer" => (delegate*<void>)&API_UpdateCursorFramebuffer,
+                "ClearFramebuffer" => (delegate*<void>)&API_ClearFramebuffer,
+                "GetFramebufferWidth" => (delegate*<ushort>)&API_GetFramebufferWidth,
+                "GetFramebufferHeight" => (delegate*<ushort>)&API_GetFramebufferHeight,
+                "ACPITimerSleep" => (delegate*<ulong, void>)&API_ACPITimerSleep,
+                "GetTimerTicks" => (delegate*<ulong>)&API_GetTimerTicks,
+                "NativeHlt" => (delegate*<void>)&API_NativeHlt,
+                #endregion System.Console
+
                 _ => null
             };
 
@@ -62,6 +81,32 @@ namespace MOOS
 
             return api;
         }
+
+        #region System.Console
+
+        public static void API_WriteFramebuffer(char chr) => Console.WriteFramebuffer(chr);
+
+        public static void API_KeyboardCleanKeyInfo(bool noModifiers) => Keyboard.CleanKeyInfo(noModifiers);
+
+        public static ConsoleKeyInfo API_KeyboardGetKeyInfo() => Keyboard.KeyInfo;
+
+        public static void API_MoveUpFramebuffer() => Console.MoveUpFramebuffer();
+
+        public static void API_UpdateCursorFramebuffer() => Console.UpdateCursorFramebuffer();
+
+        public static void API_ClearFramebuffer() => Console.ClearFramebuffer();
+
+        public static ushort API_GetFramebufferWidth() => Framebuffer.Width;
+
+        public static ushort API_GetFramebufferHeight() => Framebuffer.Height;
+
+        public static void API_ACPITimerSleep(ulong ms) => ACPITimer.Sleep(ms);
+
+        public static ulong API_GetTimerTicks() => Timer.Ticks;
+
+        public static void API_NativeHlt() => Native.Hlt();
+
+        #endregion System.Console
 
 #if Kernel && HasGUI
 

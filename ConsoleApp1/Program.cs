@@ -1,3 +1,4 @@
+using System;
 using System.Runtime;
 using System.Runtime.InteropServices;
 
@@ -44,16 +45,16 @@ namespace ConsoleApp1
         [RuntimeExport("malloc")]
         public static nint malloc(ulong size) => Allocate(size);
 
-        [DllImport("WriteString0")]
+        [DllImport("WriteString")]
         public static extern void WriteString(string s);
 
         [RuntimeExport("Main")]
         public static void Main()
         {
-            WriteString("Content of Text.txt is: ");
+            Console.WriteLine("Content of Text.txt is: ");
 
             ReadAllBytes("Text.txt", out var size, out var data);
-            for(ulong i = 0; i < size; i++) 
+            for (ulong i = 0; i < size; i++)
             {
                 Write((char)data[i]);
             }

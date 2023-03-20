@@ -1,20 +1,38 @@
 #define ASCII
 
-using MOOS.Driver;
-using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
-namespace MOOS
+namespace System
 {
     public static unsafe partial class Console
     {
-        public static int Width { get => Framebuffer.Width / 8; }
-        public static int Height { get => Framebuffer.Height / 16; }
+        [DllImport("GetFramebufferWidth")]
+        private static extern ushort GetFramebufferWidth();
+
+        [DllImport("GetFramebufferHeight")]
+        private static extern ushort GetFramebufferHeight();
+
+        [DllImport("WriteFrameBuffer")]
+        private static extern void WriteFramebuffer(char chr);
+
+        [DllImport("KeyboardCleanKeyInfo")]
+        private static extern void KeyboardCleanKeyInfo(bool noModifiers);
+
+        [DllImport("KeyboardGetKeyInfo")]
+        private static extern ConsoleKeyInfo KeyboardGetKeyInfo();
+
+        [DllImport("ClearFramebuffer")]
+        private static extern void ClearFramebuffer();
+
+        public static int Width { get => GetFramebufferWidth() / 8; }
+        public static int Height { get => GetFramebufferHeight() / 16; }
 
         public static int CursorX = 0;
         public static int CursorY = 0;
 
         public delegate void OnWriteHandler(char chr);
+
         public static event OnWriteHandler OnWrite;
 
         private static uint[] ColorsFB;
@@ -23,6 +41,22 @@ namespace MOOS
 
         public static char LastKeyChar;
         public static char ThisKeyChar;
+
+        public static unsafe bool KeyAvailable
+        {
+            get
+            {
+                ConsoleKeyInfo keyInfo = KeyboardGetKeyInfo();
+                return keyInfo.KeyState.HasFlag(ConsoleKeyState.Pressed) && keyInfo.KeyChar != '\0';
+            }
+        }
+
+        public static void SetCursorPosition(int x, int y)
+        {
+            CursorX = x;
+            CursorY = y;
+            UpdateCursor();
+        }
 
         internal static void Setup()
         {
@@ -51,7 +85,6 @@ namespace MOOS
             };
 
             ForegroundColor = ConsoleColor.White;
-
         }
 
         public static void Wait(ref bool b)
@@ -62,34 +95,41 @@ namespace MOOS
                 switch (phase)
                 {
                     case 0:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 1:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 2:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 3:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
+
                     case 4:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 5:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 6:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 7:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
                 }
                 phase++;
                 phase %= 8;
-                Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                CursorX--;
+                ACPITimerSleep(100000);
             }
         }
 
@@ -101,96 +141,117 @@ namespace MOOS
                 switch (phase)
                 {
                     case 0:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 1:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 2:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 3:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
+
                     case 4:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 5:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 6:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 7:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
                 }
                 phase++;
                 phase %= 8;
-                Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                CursorX--;
+                ACPITimerSleep(100000);
             }
         }
 
+        [DllImport("ACPITimerSleep")]
+        private static extern void ACPITimerSleep(ulong milliseconds);
+
+        [DllImport("GetTimerTicks")]
+        private static extern ulong GetTimerTicks();
+
         public static bool Wait(delegate*<bool> func, int timeOutMS = -1)
         {
-            ulong prev = Timer.Ticks;
+            ulong prev = GetTimerTicks();
+            ;
 
             int phase = 0;
             while (!func())
             {
-                if (timeOutMS >= 0 && Timer.Ticks > (prev + (uint)timeOutMS))
+                if (timeOutMS >= 0 && GetTimerTicks() > (prev + (uint)timeOutMS))
                 {
                     return false;
                 }
                 switch (phase)
                 {
                     case 0:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 1:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 2:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 3:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
+
                     case 4:
-                        Console.Write('/', true);
+                        Write('/', true);
                         break;
+
                     case 5:
-                        Console.Write('-', true);
+                        Write('-', true);
                         break;
+
                     case 6:
-                        Console.Write('\\', true);
+                        Write('\\', true);
                         break;
+
                     case 7:
-                        Console.Write('|', true);
+                        Write('|', true);
                         break;
                 }
                 phase++;
                 phase %= 8;
-                Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                CursorX--;
+                ACPITimerSleep(100000);
             }
             return true;
         }
 
         public static void Write(string s)
         {
-            ConsoleColor col = Console.ForegroundColor;
+            ConsoleColor col = ForegroundColor;
             for (byte i = 0; i < s.Length; i++)
             {
                 if (s[i] == '[')
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    ForegroundColor = ConsoleColor.Yellow;
                 }
-                Console.Write(s[i]);
+                Write(s[i]);
                 if (s[i] == ']')
                 {
-                    Console.ForegroundColor = col;
+                    ForegroundColor = col;
                 }
             }
             s.Dispose();
@@ -236,45 +297,38 @@ namespace MOOS
             }
         }
 
-        internal static void WriteFramebuffer(char chr)
-        {
-            if (Framebuffer.VideoMemory != null && !Framebuffer.TripleBuffered)
-            {
-                int X = (Framebuffer.Graphics.Width / 2) - ((Width * 8) / 2) + (CursorX * 8);
-                int Y = (Framebuffer.Graphics.Height / 2) - ((Height * 16) / 2) + (CursorY * 16);
-                Framebuffer.Graphics.FillRectangle(X, Y, 8, 16, 0x0);
-                ASC16.DrawChar(chr, X, Y, ColorsFB[(int)ForegroundColor]);
-            }
-        }
-
         public static ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            Keyboard.CleanKeyInfo(true);
-            while (Keyboard.KeyInfo.KeyChar == '\0') Native.Hlt();
+            KeyboardCleanKeyInfo(true);
+            ConsoleKeyInfo keyInfo = new();
+            while ((keyInfo = KeyboardGetKeyInfo()).KeyChar == '\0') NativeHlt();
+
             if (!intercept)
             {
-                switch (Keyboard.KeyInfo.Key)
+                switch (keyInfo.Key)
                 {
                     case ConsoleKey.Enter:
-                        Console.WriteLine();
+                        WriteLine();
                         break;
+
                     case ConsoleKey.Delete:
                     case ConsoleKey.Backspace:
-                        Console.Back();
+                        Back();
                         break;
+
                     default:
-                        Console.Write(Keyboard.KeyInfo.KeyChar);
+                        Write(keyInfo.KeyChar);
                         break;
                 }
             }
-            return Keyboard.KeyInfo;
+            return keyInfo;
         }
 
         public static string ReadLine()
         {
             string s = string.Empty;
             ConsoleKeyInfo key;
-            while ((key = Console.ReadKey()).Key != ConsoleKey.Enter)
+            while ((key = ReadKey()).Key != ConsoleKey.Enter)
             {
                 switch (key.Key)
                 {
@@ -283,6 +337,7 @@ namespace MOOS
                         if (s.Length == 0) continue;
                         s.Length -= 1;
                         break;
+
                     default:
                         string cache1 = key.KeyChar.ToString();
                         string cache2 = s + cache1;
@@ -290,12 +345,14 @@ namespace MOOS
                         cache1.Dispose();
                         s = cache2;
                         break;
-
                 }
-                Native.Hlt();
+                NativeHlt();
             }
             return s;
         }
+
+        [DllImport("NativeHlt")]
+        private static extern IntPtr NativeHlt();
 
         private static void MoveUp()
         {
@@ -306,39 +363,16 @@ namespace MOOS
             }
         }
 
-        internal static void MoveUpFramebuffer()
-        {
-            if (Framebuffer.VideoMemory != null && !Framebuffer.TripleBuffered)
-            {
-                Framebuffer.Graphics.Copy(
-                    (Framebuffer.Graphics.Width / 2) - (Width * 8 / 2),
-                    (Framebuffer.Graphics.Height / 2) - (Height * 16 / 2),
-
-                    (Framebuffer.Graphics.Width / 2) - (Width * 8 / 2),
-                    (Framebuffer.Graphics.Height / 2) - (Height * 16 / 2) + 16,
-
-                    Width * 8,
-                    Height * 16
-                    );
-            }
-        }
+        [DllImport("MoveUpFramebuffer")]
+        private static extern void MoveUpFramebuffer();
 
         private static void UpdateCursor()
         {
             UpdateCursorFramebuffer();
         }
 
-        internal static void UpdateCursorFramebuffer()
-        {
-            if (Framebuffer.VideoMemory != null && !Framebuffer.TripleBuffered)
-            {
-                ASC16.DrawChar('_',
-                            (Framebuffer.Graphics.Width / 2) - ((Width * 8) / 2) + ((CursorX) * 8),
-                            (Framebuffer.Graphics.Height / 2) - ((Height * 16) / 2) + (CursorY * 16),
-                            0xFFFFFFFF
-                            );
-            }
-        }
+        [DllImport("UpdateCursorFramebuffer")]
+        private static extern void UpdateCursorFramebuffer();
 
         public static void WriteLine(string s)
         {
@@ -367,21 +401,6 @@ namespace MOOS
             CursorX = 0;
             CursorY = 0;
             ClearFramebuffer();
-        }
-
-        internal static void ClearFramebuffer()
-        {
-            if (Framebuffer.VideoMemory != null && !Framebuffer.TripleBuffered)
-            {
-                Framebuffer.Graphics.FillRectangle
-                    (
-                            (Framebuffer.Graphics.Width / 2) - ((Width * 8) / 2) + ((CursorX) * 8),
-                            (Framebuffer.Graphics.Height / 2) - ((Height * 16) / 2) + (CursorY * 16),
-                            Width * 8,
-                            Height * 16,
-                            0x0
-                    );
-            }
         }
     }
 }

@@ -11,7 +11,7 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 
-		<DefineConstants>Kernel;UseAPIC;HasGUI</DefineConstants>
+		<DefineConstants>Kernel;UseAPIC;HasGUI;</DefineConstants>
 
 		<IlcSystemModule>MOOS</IlcSystemModule>
 		<EntryPointSymbol>Entry</EntryPointSymbol>
@@ -28,8 +28,9 @@
 	<Target Name="CustomizeReferences" BeforeTargets="BeforeCompile" AfterTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
 			<ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="%(Filename) != 'Corlib'" />
-			<ReferencePath Remove="@(ReferencePath)" />
+			<ReferencePath Remove="@(ReferencePath)" />			
 		</ItemGroup>
+		<Exec Command="cmd.exe /c echo !!! $([System.Environment]::CommandLine.Trim())" />
 	</Target>
 
 	<ItemGroup>
@@ -40,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<LinkerArg Include="/fixed /base:0x10000000 /map:Kernel.map" />
+		<LinkerArg Include="-x /fixed /base:0x10000000 /map:Kernel.map" />
 	</ItemGroup>
 
 	<!--<ItemGroup>
