@@ -11,7 +11,7 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 
-		<DefineConstants>Kernel;UseAPIC;HasGUI;BFLAT</DefineConstants>
+		<DefineConstants>Kernel;UseAPIC;HasGUI</DefineConstants>
 
 		<IlcSystemModule>MOOS</IlcSystemModule>
 		<EntryPointSymbol>Entry</EntryPointSymbol>
@@ -19,7 +19,7 @@
 		<!--Make the code faster!-->
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
 		<!--Following line solves build error after upgrading to MSBuild version 17.5.0+6f08c67f3-->
-		<IlcPath>D:\Users\$(USERNAME)\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
+		<IlcPath>C:\Users\Administrator.SP\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
 		<NoStdLib>True</NoStdLib>
 
 	</PropertyGroup>
@@ -32,7 +32,7 @@
 			<ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="%(Filename) != 'Corlib'" />
 			<ReferencePath Remove="@(ReferencePath)" />			
 		</ItemGroup>
-		<Exec Command="cmd.exe /c echo !!! $([System.Environment]::CommandLine.Trim())" />
+		<Exec Command="cmd.exe /c echo CommandLine:$([System.Environment]::CommandLine.Trim())" />
 	</Target>
 
 	<ItemGroup>
@@ -46,26 +46,26 @@
 		<LinkerArg Include="-x /fixed /base:0x10000000 /map:Kernel.map" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.3" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile!-->
-	<!--<ItemGroup>
+	<ItemGroup>
 		<PackageDefinitions Include="MOOS" />
 		<PrivateSdkAssemblies Include="MOOS" />
 		<FrameworkAssemblies Include="MOOS" />
 		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
-	</ItemGroup>-->
+	</ItemGroup>
 
 	<Import Project="..\Kernel\Kernel.projitems" Label="Shared" />
 
 	<Target Name="BuildISO" AfterTargets="Publish">
+		<Exec Command="cmd.exe /c echo MSBuildProjectDirectory=$(MSBuildProjectDirectory);NativeOutputPath=$(NativeOutputPath);TargetName=$(TargetName);NativeBinaryExt=$(NativeBinaryExt)"></Exec>
 		<Delete Files="$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar"></Delete>
 		<Exec Command="&quot;$(MSBuildStartupDirectory)\Tools\7-Zip\7z.exe&quot; a &quot;$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar&quot; &quot;$(MSBuildStartupDirectory)\Ramdisk\*"></Exec>
 		<Exec WorkingDirectory="$(MSBuildStartupDirectory)\Tools\" Command="&quot;$(MSBuildStartupDirectory)\Tools\nasm.exe&quot; -fbin &quot;$(MSBuildStartupDirectory)\Tools\Trampoline.asm&quot; -o &quot;$(MSBuildStartupDirectory)\Tools\trampoline.o&quot;"></Exec>
-		<Exec WorkingDirectory="$(MSBuildStartupDirectory)\Tools\" Command="&quot;$(MSBuildStartupDirectory)\Tools\nasm.exe&quot; -fbin &quot;$(MSBuildStartupDirectory)\Tools\EntryPoint.asm&quot; -o &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o&quot;"></Exec>
-		<Exec Command="cmd.exe /c echo !!! $(MSBuildProjectDirectory)@$(NativeOutputPath)@$(TargetName)@$(NativeBinaryExt)"></Exec>
+		<Exec WorkingDirectory="$(MSBuildStartupDirectory)\Tools\" Command="&quot;$(MSBuildStartupDirectory)\Tools\nasm.exe&quot; -fbin &quot;$(MSBuildStartupDirectory)\Tools\EntryPoint.asm&quot; -o &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o&quot;"></Exec>		
 		<Exec Command="cmd.exe /c copy /b &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o&quot;+&quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)&quot; &quot;$(MSBuildStartupDirectory)\Tools\grub2\boot\kernel.bin&quot;"></Exec>
 		<Delete Files="$(MSBuildProjectDirectory)\$(NativeOutputPath)loader.o"></Delete>
 		<Delete Files="$(MSBuildStartupDirectory)\Tools\trampoline.o"></Delete>
