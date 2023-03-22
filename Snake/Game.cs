@@ -3,7 +3,7 @@ using Thread = System.Threading.Thread;
 
 namespace Snake;
 
-internal class Game : IDisposable
+internal class Game
 {
     private enum Result
     {
@@ -95,7 +95,7 @@ internal class Game : IDisposable
         Console.CursorVisible = false;
 #endif
 
-         FrameBuffer fb = new FrameBuffer();
+        FrameBuffer fb = new FrameBuffer();
 
         while (isRunning)
         {
@@ -103,9 +103,10 @@ internal class Game : IDisposable
             // Work around TickCount crashing on QEMU
             Game g = new Game(0);
 #else
-            using Game g = new Game((uint)DateTime.Now.Ticks);
+            Console.WriteLine("Entered");
+            Game g = new Game((uint)DateTime.Now.Ticks);
 #endif
-            Result result = g.Run(ref fb);
+            Result result = Result.Win;//g.Run(ref fb);
 
             string message = result == Result.Win ? "You win" : "You lose";
 
@@ -117,9 +118,9 @@ internal class Game : IDisposable
 
             fb.Render();
 
-            Console.ReadKey(intercept: true);
+            // Console.ReadKey(intercept: true);
         }
-        
+
         fb.Dispose();
     }
 }

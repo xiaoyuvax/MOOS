@@ -1,6 +1,9 @@
+using System.Runtime.InteropServices;
+
 namespace System
 {
-    public struct ConsoleKeyInfo : IDisposable
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ConsoleKeyInfo
     {
         public ConsoleKeyInfo(char keyChar, ConsoleKey key, bool shift, bool alt, bool control)
         {
@@ -10,8 +13,6 @@ namespace System
             if (alt) Modifiers = ConsoleModifiers.Alt;
             if (control) Modifiers = ConsoleModifiers.Control;
         }
-
-
 
         public int ScanCode;
         public ConsoleKey Key;

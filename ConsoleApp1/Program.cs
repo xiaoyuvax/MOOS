@@ -18,8 +18,11 @@ namespace ConsoleApp1
         [DllImport("Allocate")]
         public static extern nint Allocate(ulong size);
 
+        [RuntimeExport("free")]
+        public static ulong free(nint ptr) => AFree(ptr);
+
         [DllImport("Free")]
-        public static extern ulong Free(nint ptr);
+        public static extern ulong AFree(nint ptr);
 
         [DllImport("Reallocate")]
         public static extern nint Reallocate(nint intPtr, ulong size);
@@ -51,6 +54,7 @@ namespace ConsoleApp1
         [RuntimeExport("Main")]
         public static void Main()
         {
+            Console.Setup();
             Console.WriteLine("Content of Text.txt is: ");
 
             ReadAllBytes("Text.txt", out var size, out var data);

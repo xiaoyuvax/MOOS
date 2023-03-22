@@ -1,6 +1,6 @@
 namespace System
 {
-    public enum ConsoleKeyState
+    public enum ConsoleKeyState : byte
     {
         None,
         Pressed,

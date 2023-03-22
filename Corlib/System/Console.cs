@@ -25,6 +25,9 @@ namespace System
         [DllImport("ClearFramebuffer")]
         private static extern void ClearFramebuffer();
 
+        [DllImport("InvokeOnWriteHanlder")]
+        private static extern void InvokeOnWriteHanlder(char chr);
+
         public static int Width { get => GetFramebufferWidth() / 8; }
         public static int Height { get => GetFramebufferHeight() / 16; }
 
@@ -60,7 +63,7 @@ namespace System
 
         internal static void Setup()
         {
-            OnWrite = null;
+            OnWrite += InvokeOnWriteHanlder;
 
             Clear();
 
@@ -300,7 +303,7 @@ namespace System
         public static ConsoleKeyInfo ReadKey(bool intercept = false)
         {
             KeyboardCleanKeyInfo(true);
-            ConsoleKeyInfo keyInfo = new();
+            ConsoleKeyInfo keyInfo;
             while ((keyInfo = KeyboardGetKeyInfo()).KeyChar == '\0') NativeHlt();
 
             if (!intercept)
