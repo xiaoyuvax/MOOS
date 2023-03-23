@@ -24,16 +24,24 @@ In order to build MOOS with BFlat, you need:
 ### 1.Prepare args for BFlatA
 Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.
 
-	build
-	D:\Repos\MOOS\MOOS\moos.csproj
+	#BFlatA verb and project to build, these two lines must present at the start in order.
+	build D:\Repos\MOOS\MOOS\moos.csproj
+
+	#Solution Home:
 	-h:d:\repos\moos 
-	--target Exe
+
+	#Base lib selection:
+	#if there's <NoStdLib> tag in .csproj, you don't have to add this line below
 	--stdlib None
 	--libc none
-	--ldflags "/fixed /base:0x10000000"
-	#The linker comes with BFlat has some problem with MSVC libs, so add -c option prevent bflat invoke its own linker. We'll use MSVC Linker instead.
+
+	#Use external linker:
+	The linker comes with BFlat has some problem with MSVC libs, so add -c option to prevent bflat invoke its own linker. We'll use MSVC Linker instead.
 	-c 
-	#Bflat doesn't produce this res file which seems a must for MOOS image
+	--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
+
+	#Additional linker args:
+	#Bflat doesn't produce this .res file which seems a must for MOOS image, but actually contains no much data.
 	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"
 	#Due to bflat's arg parsing bug, spaces in path does not work, must be replaced with short filenames like below.
 	--ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
@@ -44,9 +52,10 @@ Save the following text to a "moos.bfa" file, all paths inside shall be reviewed
     bflata -inc:moos.bfa
 
 
-## Modification in MOOS Runtime
+## Modifications in MOOS Runtime
 
-https://github.com/bflattened/bflat/issues/95
+As described in:
+[https://github.com/bflattened/bflat/issues/95](https://github.com/bflattened/bflat/issues/95#issuecomment-1471409976)
 
 
 
