@@ -27,7 +27,7 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 
 	#BFlatA的动词和编译目标，必须放在前两行（目前）。
 	build
-	D:\Repos\MOOS\MOOS\moos.csproj
+	..\MOOS\MOOS\moos.csproj
 
 	#解决方案根路径
 	-h:d:\repos\moos 
@@ -39,13 +39,13 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 
 	#使用外部链接器：
 	#BFlat自带的链接器使用MSVC的静态库的时候有点问题，所以使用--linker指定外部连接器防止BFlat调用自己的链接器。这里我们用MSVC的链接器。
-	--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
+	--linker:"...\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
 	#其他链接器参数：
 	#BFlat不生成下面这个.res文件，但好像MOOS如果不嵌入这个文件，就无法工作，所以还是需要引用一下，这个文件得靠MSBuild生成，这个我暂时也很无奈。
 	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"	
 	#鉴于BFlat的参数分析Bug，我这里之前用了短文件名。但实际对于MSVC Linker不需要。
-	--ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
+	--ldflags "/libpath:...\Tools\MSVC\14.35.32215\lib\x64"
 
 ### 2.确保%PATH%变量中设好了BFlat和BFlatA的路径。
 ### 3.运行BFlatA 
