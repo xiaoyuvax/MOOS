@@ -121,11 +121,11 @@ BFlatA output:
 	--END---------------------------------
 
 ## Followups
-Now you get moos.exe at current directory (unless you specify -o:<output file> in moos.bfa file), the rest work is to merge MOOS.exe with loader.o to get the kernel.bin, and the last step is to make an iso which is bootable by using Grub2 which load the kernel.bin after startup. As you can see in moos.csproj.
+Now you get moos.exe at current directory (unless you specify -o:<output file> in moos.bfa file), the remaing work to do is to merge MOOS.exe with loader.o to get the kernel.bin, and the last step is to make an iso which is bootable by using Grub2 which loads the kernel.bin after startup, as described in moos.csproj.
 
 ## Modifications in MOOS Runtime
 
-As described in:
+Check out:
 [https://github.com/bflattened/bflat/issues/95](https://github.com/bflattened/bflat/issues/95#issuecomment-1471409976)
 
 
