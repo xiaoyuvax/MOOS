@@ -19,6 +19,8 @@ MOOS ( **M**y **O**wn **O**perating **S**ystem )是一个使用.NET Native AOT�
 作者QQ: 3244735564  
 
 ## 编译
+这个分支修改了相关代码和配置以便能够用BFlat，一个可以替代的C#本机代码编译器来编译MOOS。编译方法详情见：[如何用BFlat编译MOOS](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.cn.md). 当然你仍然可以继续用VS编译MOOS，但MOOS目前只能用一个古老的ILComplier来编译，有点不爽。
+
 关于编译MOOS的信息，请阅读 [编译维基页面](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F)。
 
 ### 编译要求
