@@ -21,7 +21,7 @@ In order to build MOOS with BFlat, you need:
 - BFlatA built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
 - Clone my forked version of MOOS which has been modified to be compatiable with building by both MSBuild + ILCompiler in VS and BFlatA+BFlat.
 
-## Buiding Steps
+## Building Steps
 ### 1.Prepare args for BFlatA
 Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.
 
