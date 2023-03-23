@@ -3,7 +3,7 @@
 # 如何使用BFlat编译MOOS
 
 ## BFlat是啥?
-BFlat是一个C#本地编译器，提供了类似Go的构建体验，可以用来替代MSBuild。你可以在[这里]{http://flattened.net}下载BFlat二进制文件，并[在这里](https://github.com/bflattened/bflat)查看工程源码。
+BFlat是一个C#本地编译器，提供了类似Go的构建体验，可以用来替代MSBuild。你可以在[这里](http://flattened.net)下载BFlat二进制文件，并[在这里](https://github.com/bflattened/bflat)查看工程源码。
 BFlat的一些优点：
 - 它不需要工程配置文件，而是直接将所有代码在路径结构中构建为单个可执行文件。
 - BFlat可以构建在裸机上运行的最小化的二进制文件。
