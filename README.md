@@ -19,7 +19,7 @@ MOOS (To Make **M**y **O**wn **O**perating **S**ystem Project) is a C# x64 opera
 
 ## Building
 
-This fork has modified the codes and relevant configurations to allow MOOS be compiled by an alternative C# native compiler BFlat, read [How to compile MOOS with BFlat](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md).
+This fork has modified the codes and relevant configurations to allow MOOS be compiled by an alternative C# native compiler BFlat, read [How to compile MOOS with BFlat](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md). Of course, you can still build MOOS in VS with MSBuild, although it uses an ancient verison of ILCompiler.
 
 For more information on compiling MOOS, please read the [build wiki page](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F).
 
