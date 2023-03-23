@@ -25,7 +25,8 @@ In order to build MOOS with BFlat, you need:
 Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.
 
 	#BFlatA verb and project to build, these two lines must present at the start in order.
-	build D:\Repos\MOOS\MOOS\moos.csproj
+	build
+	D:\Repos\MOOS\MOOS\moos.csproj
 
 	#Solution Home:
 	-h:d:\repos\moos 
@@ -36,7 +37,7 @@ Save the following text to a "moos.bfa" file, all paths inside shall be reviewed
 	--libc none
 
 	#Use external linker:
-	The linker comes with BFlat has some problem with MSVC libs, so add -c option to prevent bflat invoke its own linker. We'll use MSVC Linker instead.
+	#The linker comes with BFlat has some problem with MSVC libs, so add -c option to prevent bflat invoke its own linker. We'll use MSVC Linker instead.
 	-c 
 	--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
@@ -47,10 +48,80 @@ Save the following text to a "moos.bfa" file, all paths inside shall be reviewed
 	--ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
 
 ### 2.Ensure BFlat and BFlatA are both set in %PATH%.
-### 2.Run BFlatA 
+### 3.Run BFlatA 
 
     bflata -inc:moos.bfa
 
+BFlatA output:
+
+	BFlatA V1.4.2.0 @github.com/xiaoyuvax/bflata
+	Description:
+	  A wrapper/build script generator for BFlat, a native C# compiler, for recusively building .csproj file with:
+	    - Referenced projects
+	    - Nuget package dependencies
+	    - Embedded resources
+	  Before using BFlatA, you should get BFlat first at https://flattened.net.
+
+
+	--ARGS--------------------------------
+	Action          :Build
+	BuildMode       :Flat
+	DepositDep      :Off
+	Target          :Exe
+	Output          :<Default>
+	TargetFx        :net7.0
+	PackageRoot     :<N/A>
+	Home            :d:\repos\moos
+	BFA Includes    :1
+	Args for BFlat  :--stdlib None --libc none -c --ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res" --ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
+
+	--LIB EXCLU---------------------------
+	--LIB CACHE---------------------------
+
+
+	--PARSING-----------------------------
+	Parsing Project:D:\Repos\MOOS\MOOS\moos.csproj ...
+		       NativeLib        [Include]       9 items added!
+	Parsing Project:D:\Repos\MOOS\Kernel\Kernel.projitems ...
+		  CompileInclude        [Include]       6400 items added!
+	Parsing Project:D:\Repos\MOOS\Corlib\Corlib.projitems ...
+		  CompileInclude        [Include]       12996 items added!
+
+	--SCRIPTING---------------------------
+	Generating build script for:moos
+	- Found 10 args to be passed to BFlat.
+	- Found 215 code files(*.cs)
+	- Found 3 dependent native libs(*.lib|*.a)
+	Build script's written!
+
+
+	--BUILDING----------------------------
+	Building in FLAT mode:moos...
+	- Executing build script: bflat build @build.rsp...
+	Compiler exit code:0
+	Microsoft (R) Incremental Linker Version 14.35.32215.0
+	Copyright (C) Microsoft Corporation.  All rights reserved.
+
+	moos.obj
+	/ENTRY:Entry
+	/SUBSYSTEM:NATIVE
+	/INCREMENTAL:no
+	/fixed
+	/base:0x10000000
+	D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res
+	/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64
+	d:\repos\moos\x64\Debug\NativeLib.lib
+	d:\repos\moos\x64\Debug\LibC.lib
+	d:\repos\moos\x64\Debug\Doom.lib
+	NativeLib.lib(interrupts.obj) : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/OPT:ICF”规范)
+	LINK : warning LNK4217:符号“free”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_free”中)导入LINK : warning LNK4217:符号“malloc”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_malloc”中)导入
+	LINK : warning LNK4217:符号“realloc”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_realloc”中)导入
+	LINK : warning LNK4281:x64 映像的基址 0x10000000 不适当；将基址设为 4 GB 以上以实现最佳 ASLR 优化
+	Linker exit code:0
+	--END---------------------------------
+
+## Followups
+Now you get moos.exe at current directory (unless you specify -o:<output file> in moos.bfa file), the rest work is to merge MOOS.exe with loader.o to get the kernel.bin, and the last step is to make an iso which is bootable by using Grub2 which load the kernel.bin after startup. As you can see in moos.csproj.
 
 ## Modifications in MOOS Runtime
 
