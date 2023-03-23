@@ -1,4 +1,4 @@
-[![Language switcher](https://img.shields.io/badge/Language%20%2F%20%E8%AF%AD%E8%A8%80-English%20%2F%20%E8%8B%B1%E8%AF%AD-blue)](https://github.com/nifanfa/MOOS/blob/main/README_CN.md)
+[![Language switcher](https://img.shields.io/badge/Language%20%2F%20%E8%AF%AD%E8%A8%80-Chinese%20%2F%20%E4%B8%AD%E6%96%87-blue)](https://github.com/xiaoyuvax/MOOS/blob/master/README_CN.md)
 
 <p align="center">
     <img width=300 src="MOOS-Logo.svg"/>
