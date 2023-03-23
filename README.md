@@ -18,7 +18,11 @@
 MOOS (To Make **M**y **O**wn **O**perating **S**ystem Project) is a C# x64 operating system compiler with the .NET 7 Native AOT technology.
 
 ## Building
-For information on compiling MOOS, please read the [build wiki page](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F).
+
+This fork has modified the codes and relevant configurations to allow MOOS be compiled by an alternative C# native compiler BFlat, read [How to compile MOOS with BFlat](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md).
+
+For more information on compiling MOOS, please read the [build wiki page](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F).
+
 
 ### Build requirements
 - VMware Workstation Player - https://www.vmware.com/products/workstation-player.html
