@@ -1,3 +1,4 @@
+[![Language switcher](https://img.shields.io/badge/Language%20%2F%20%E8%AF%AD%E8%A8%80-English%20%2F%20%E8%8B%B1%E8%AF%AD-blue)](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md)
 
 # 如何使用BFlat编译MOOS
 
