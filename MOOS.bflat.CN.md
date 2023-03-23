@@ -1,58 +1,57 @@
 
 # 如何使用BFlat编译MOOS
 
-## What is BFlat?
-BFlat is a C# native compiler offering a Go like buidling experience, which you may use to replace MSBuild. You can download BFlat binary [here]{http://flattened.net}, and check out the project [here](https://github.com/bflattened/bflat). 
-Some charming features of BFlat: 
-- it doesn't need a project file, but simply builds all codes in a path structure directly into a single executable.
-- BFlat can build minimalist binary which runs on bare metal.
+## BFlat是啥?
+BFlat是一个C#本地编译器，提供了类似Go的构建体验，可以用来替代MSBuild。你可以在[这里]{http://flattened.net}下载BFlat二进制文件，并[在这里](https://github.com/bflattened/bflat)查看工程源码。
+BFlat的一些优点：
+- 它不需要工程配置文件，而是直接将所有代码在路径结构中构建为单个可执行文件。
+- BFlat可以构建在裸机上运行的最小化的二进制文件。
 
+MOOS是在VS中编写的，因此存在复杂的项目结构和大量的描述文件，例如必须为MSBuild提供.csproj文件。此外，MOOS需要ILCompiler，这是一个Nuget包，附带了将Dotnet IL二进制代码编译为本机代码的工具，这是在Dotnet8之前的NativeAOT的编译方式。但是，BFlat可以算是NativeAOT的另一种感觉更直觉一点的编译器。
+此外，MOOS还包括了一些MASM和C++代码，这些代码应该被单独编译。这里我们只讨论在MOOS中构建C#代码的问题。
+MOOS的一个问题是，它目前只能使用一个古老且修改过的版本的ILComplier构建，这使得它与最新的dotnet运行时不兼容（请参见下面的MOOS运行时更改），这也是我寻找不同且更新的本地编译器（例如BFlat）的部分原因。
 
-MOOS is written in VS, so there is a complicated project structure and piles of descriptive files such as the .csproj files must be served for MSBuild to accomplish the build. In addition, MOOS requires ILCompiler, a Nuget package comes with tools to compile Dotnet IL binary to native, which is what NativeAOT means before Dotnet8. However BFlat is exacrtly another version of NativeAOT but more intuitive.
-Otherwise, MOOS also involves some MASM and C++ codes which should be built separatedly. Here we only discuss about building the C# codes in MOOS.
-A problem with MOOS is that it can only be built with an acnient and modified version of ILComplier, as makes it not compatiable with the newest dotnet runtime (see below MOOS Runtime Change) and is a partial reason that i sought a different and newer native compiler, such as BFlat.
+事实是，BFlat不能直接构建MOOS，至少BFlat不读取.csproj文件。这就是我写[BFlatA](https://github.com/xiaoyuvax/bflata)的原因，它是一个配合BFlat的套壳编译工具、编译脚本生成器以及用于BFlat的代码文件提取器（如果沿用bflat的哲学，称为“打平器”更有意思），它可以从一个根级csproj文件开始提取构建参数、文件引用、依赖项（如nuget包）和资源文件，然后允许执行BFlat从根.csproj文件开始构建在VS中编写的C#项目。您可以在[这里](https://github.com/xiaoyuvax/bflata)看更多详细信息并找到源代码。
 
-The fact is, BFlat cannot build MOOS directly, at least BFlat doesn't read .csproj file. That's why(of course not for MOOS only) I wrote [BFlatA](https://github.com/xiaoyuvax/bflata), a small wrapper and buildscript generater as well as project flattener for BFlat, which can extract build arguments, file references, dependencies(such as nuget package) and resources from project hierachy starting from a root csproj file, and then allowing executing BFlat to build a C# project written in VS starting from a root .csproj file. You can read more details and find the source code [here](https://github.com/xiaoyuvax/bflata).
+## 总结一下:
+为了使用BFlat编译MOOS，你需要：
 
-## A summary:
-In order to build MOOS with BFlat, you need:
-- BFlat installed and the bin subdirectory set in %path% of system environment.
-- BFlatA built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
-- Clone my forked version of MOOS which has been modified to be compatiable with building by both MSBuild + ILCompiler in VS and BFlatA+BFlat.
+- 安装BFlat，并将其bin子目录设置在系统环境的%path%中。
+- 从源码编译BFlatA（仅一个代码文件）。你可以在VS中编译，也可以简单地通过BFlat编译（推荐），然后你可以将bflata.exe复制到BFlat的/bin/路径中，这样它就可以在任何地方运行，因为%path%已经设置好了。
+- 克隆我修改后的MOOS分支，这个版本能够兼容地在VS中用MSBuild + ILCompiler编译也能够使用BFlatA + BFlat编译(但最后都是用MSVC Linker链接)。
 
-## Buiding Steps
-### 1.Prepare args for BFlatA
-Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.
+## 构建步骤
+### 1.准备BFlatA用的编译参数
+把下面的参数文本保存到一个叫"moos.bfa"的文件, 其中所有路径应该按你的环境替换。
 
-	#BFlatA verb and project to build, these two lines must present at the start in order.
+	#BFlatA的动词和编译目标，必须放在前两行（目前）。
 	build
 	D:\Repos\MOOS\MOOS\moos.csproj
 
-	#Solution Home:
+	#解决方案根路径
 	-h:d:\repos\moos 
 
-	#Base lib selection:
-	#if there's <NoStdLib> tag in .csproj, you don't have to add this line below
+	#基本库选择:
+	#如果.csproj文件中有指定<NoStdLib> 就不用下面这第一行了。
 	--stdlib None
 	--libc none
 
-	#Use external linker:
-	#The linker comes with BFlat has some problem with MSVC libs, so add -c option to prevent bflat invoke its own linker. We'll use MSVC Linker instead.
-	-c 
+	#使用外部链接器：
+	#BFlat自带的链接器使用MSVC的静态库的时候有点问题，所以使用--linker指定外部连接器防止BFlat调用自己的链接器。这里我们用MSVC的链接器。
 	--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
-	#Additional linker args:
-	#Bflat doesn't produce this .res file which seems a must for MOOS image, but actually contains no much data.
-	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"
-	#Due to bflat's arg parsing bug, spaces in path does not work, must be replaced with short filenames like below.
+	#其他链接器参数：
+	#BFlat不生成下面这个.res文件，但好像MOOS如果不嵌入这个文件，就无法工作，所以还是需要引用一下，这个文件得靠MSBuild生成，这个我暂时也很无奈。
+	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"	
+	#鉴于BFlat的参数分析Bug，我这里之前用了短文件名。但实际对于MSVC Linker不需要。
 	--ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
 
-### 2.Ensure BFlat and BFlatA are both set in %PATH%.
-### 3.Run BFlatA 
+### 2.确保%PATH%变量中设好了BFlat和BFlatA的路径。
+### 3.运行BFlatA 
 
     bflata -inc:moos.bfa
 
-BFlatA output:
+BFlatA输出:
 
 	BFlatA V1.4.2.0 @github.com/xiaoyuvax/bflata
 	Description:
@@ -120,12 +119,12 @@ BFlatA output:
 	Linker exit code:0
 	--END---------------------------------
 
-## Followups
-Now you get moos.exe at current directory (unless you specify -o:<output file> in moos.bfa file), the rest work is to merge MOOS.exe with loader.o to get the kernel.bin, and the last step is to make an iso which is bootable by using Grub2 which load the kernel.bin after startup. As you can see in moos.csproj.
+## 后续工作
+现在你在当前路径会看到moos.exe(除非用在 moos.bfa中指定了-o:<output file>选项，默认是在当前路径)， 剩下的工作就是把MOOS.exe跟用宏汇编编译的loader.o文件合并成kernel.bin，然后最后的一步就是利用Grub2将kernel.bin打包到一个光盘映像文件(.iso)，保证Grub启动后会加载kernel.bin，这些在MOOS.csproj里面都写得很清楚。
 
-## Modifications in MOOS Runtime
+## MOOS自带运行时库内的更改
 
-As described in:
+见下面这个跟bflat作者讨论的帖子：
 [https://github.com/bflattened/bflat/issues/95](https://github.com/bflattened/bflat/issues/95#issuecomment-1471409976)
 
 

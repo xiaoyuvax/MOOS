@@ -37,14 +37,13 @@ Save the following text to a "moos.bfa" file, all paths inside shall be reviewed
 	--libc none
 
 	#Use external linker:
-	#The linker comes with BFlat has some problem with MSVC libs, so add -c option to prevent bflat invoke its own linker. We'll use MSVC Linker instead.
-	-c 
+	#The linker comes with BFlat has some problem with MSVC libs, so use --linker option to supress bflat invoke its own linker by supplying another. We'll use MSVC Linker instead.
 	--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
 	#Additional linker args:
 	#Bflat doesn't produce this .res file which seems a must for MOOS image, but actually contains no much data.
 	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"
-	#Due to bflat's arg parsing bug, spaces in path does not work, must be replaced with short filenames like below.
+	#Due to bflat's arg parsing bug, spaces in path does not work, must be replaced with short filenames like below. It's not neccessary with MSVC Linker.
 	--ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
 
 ### 2.Ensure BFlat and BFlatA are both set in %PATH%.
