@@ -1,0 +1,3 @@
+[submodule "SeeSharpSnake"]
+	path = SeeSharpSnake
+	url = https://github.com/MichalStrehovsky/SeeSharpSnake.git
