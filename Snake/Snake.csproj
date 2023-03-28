@@ -17,14 +17,14 @@
 		<!--Make the code faster!-->
 		<IlcOptimizationPreference>Speed</IlcOptimizationPreference>
 		<!--Following line solves build error after upgrading to MSBuild version 17.5.0+6f08c67f3-->
-		<IlcPath>C:\Users\Xiaoyu\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
+		<IlcPath>C:\Users\Administrator.sp\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
 	</PropertyGroup>
-
+	
 	<Target Name="RenameExt" AfterTargets="CopyNativeBinary">
 		<!--.MUE(MOOS User Executable)-->
 		<Copy SourceFiles="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)" DestinationFiles="$(NativeOutputPath)$(TargetName).mue"></Copy>
-		<Delete Files="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)"></Delete>
-		<Copy SourceFiles="$(NativeOutputPath)$(TargetName).mue" DestinationFiles="$(MSBuildStartupDirectory)\..\Ramdisk\$(TargetName).mue"></Copy>
+		<Copy SourceFiles="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)" DestinationFiles="$(MSBuildStartupDirectory)\..\Ramdisk\$(TargetName).mue"></Copy>
+		<Delete Files="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)"></Delete>				
 	</Target>
 
 	<Target Name="HandleBuild" AfterTargets="AfterBuild" Condition="'$(BuildingInsideVisualStudio)' == 'true'">

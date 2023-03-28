@@ -61,18 +61,18 @@ namespace MOOS
 
                 #region System.Console
 
-                "WriteFrameBuffer" => (delegate*<char, void>)&API_WriteFramebuffer,
-                "KeyboardCleanKeyInfo" => (delegate*<bool, void>)&API_KeyboardCleanKeyInfo,
-                "KeyboardGetKeyInfo" => (delegate*<ConsoleKeyInfo>)&API_KeyboardGetKeyInfo,
-                "MoveUpFramebuffer" => (delegate*<void>)&API_MoveUpFramebuffer,
-                "UpdateCursorFramebuffer" => (delegate*<void>)&API_UpdateCursorFramebuffer,
-                "ClearFramebuffer" => (delegate*<void>)&API_ClearFramebuffer,
-                "GetFramebufferWidth" => (delegate*<ushort>)&API_GetFramebufferWidth,
-                "GetFramebufferHeight" => (delegate*<ushort>)&API_GetFramebufferHeight,
-                "ACPITimerSleep" => (delegate*<ulong, void>)&API_ACPITimerSleep,
-                "GetTimerTicks" => (delegate*<ulong>)&API_GetTimerTicks,
-                "NativeHlt" => (delegate*<void>)&API_NativeHlt,
-                "InvokeOnWriteHanlder" => (delegate*<char, void>)&API_InvokeOnWriteHanlder,
+                //"WriteFrameBuffer" => (delegate*<char, void>)&API_WriteFramebuffer,
+                //"KeyboardCleanKeyInfo" => (delegate*<bool, void>)&API_KeyboardCleanKeyInfo,
+                //"KeyboardGetKeyInfo" => (delegate*<ConsoleKeyInfo>)&API_KeyboardGetKeyInfo,
+                //"MoveUpFramebuffer" => (delegate*<void>)&API_MoveUpFramebuffer,
+                //"UpdateCursorFramebuffer" => (delegate*<void>)&API_UpdateCursorFramebuffer,
+                //"ClearFramebuffer" => (delegate*<void>)&API_ClearFramebuffer,
+                //"GetFramebufferWidth" => (delegate*<ushort>)&API_GetFramebufferWidth,
+                //"GetFramebufferHeight" => (delegate*<ushort>)&API_GetFramebufferHeight,
+                //"ACPITimerSleep" => (delegate*<ulong, void>)&API_ACPITimerSleep,
+                //"GetTimerTicks" => (delegate*<ulong>)&API_GetTimerTicks,
+                //"NativeHlt" => (delegate*<void>)&API_NativeHlt,
+                //"InvokeOnWriteHanlder" => (delegate*<char, void>)&API_InvokeOnWriteHanlder,
                 #endregion System.Console
 
                 _ => null
@@ -85,29 +85,29 @@ namespace MOOS
 
         #region System.Console
 
-        public static void API_WriteFramebuffer(char chr) => Console.WriteFramebuffer(chr);
+        //public static void API_WriteFramebuffer(char chr) => Console.WriteFramebuffer(chr);
 
-        public static void API_KeyboardCleanKeyInfo(bool noModifiers) => Keyboard.CleanKeyInfo(noModifiers);
+        //public static void API_KeyboardCleanKeyInfo(bool noModifiers) => Keyboard.CleanKeyInfo(noModifiers);
 
-        public static ConsoleKeyInfo API_KeyboardGetKeyInfo() => Keyboard.KeyInfo;
+        //public static ConsoleKeyInfo API_KeyboardGetKeyInfo() => Keyboard.KeyInfo;
 
-        public static void API_MoveUpFramebuffer() => Console.MoveUpFramebuffer();
+        //public static void API_MoveUpFramebuffer() => Console.MoveUpFramebuffer();
 
-        public static void API_UpdateCursorFramebuffer() => Console.UpdateCursorFramebuffer();
+        //public static void API_UpdateCursorFramebuffer() => Console.UpdateCursorFramebuffer();
 
-        public static void API_ClearFramebuffer() => Console.ClearFramebuffer();
+        //public static void API_ClearFramebuffer() => Console.ClearFramebuffer();
 
-        public static ushort API_GetFramebufferWidth() => Framebuffer.Width;
+        //public static ushort API_GetFramebufferWidth() => Framebuffer.Width;
 
-        public static ushort API_GetFramebufferHeight() => Framebuffer.Height;
+        //public static ushort API_GetFramebufferHeight() => Framebuffer.Height;
 
-        public static void API_ACPITimerSleep(ulong ms) => ACPITimer.Sleep(ms);
+        //public static void API_ACPITimerSleep(ulong ms) => ACPITimer.Sleep(ms);
 
-        public static ulong API_GetTimerTicks() => Timer.Ticks;
+        //public static ulong API_GetTimerTicks() => Timer.Ticks;
 
-        public static void API_NativeHlt() => Native.Hlt();
+        //public static void API_NativeHlt() => Native.Hlt();
 
-        public static void API_InvokeOnWriteHanlder(char chr) => Console.InvokeOnWriteHanlder(chr);
+        //public static void API_InvokeOnWriteHanlder(char chr) => Console.InvokeOnWriteHanlder(chr);
 
         #endregion System.Console
 

@@ -33,7 +33,7 @@ namespace Snake
             Console.Setup();
             Console.WriteLine("Content of Text.txt is: ");
 
-            Game.SnakeMain();
+            //Game.SnakeMain();
             for (; ; );
         }
 

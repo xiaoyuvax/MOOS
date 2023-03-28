@@ -32,7 +32,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Collections\Generic\Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Collections\Generic\List.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Collections\Generic\Queue.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ConsoleColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ConsoleKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ConsoleKeyInfo.cs" />

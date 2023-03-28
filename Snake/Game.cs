@@ -18,11 +18,11 @@ internal class Game
         _random = new Random(randomSeed);
     }
 
-    ~Game()
-    {
-        isRunning = false;
-        _random.Dispose();
-    }
+    //~Game()
+    //{
+    //    isRunning = false;
+    //    _random.Dispose();
+    //}
 
     private Result Run(ref FrameBuffer fb)
     {

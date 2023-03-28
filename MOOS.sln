@@ -195,6 +195,7 @@ Global
 		Corlib\Corlib.projitems*{479ee355-d81e-4162-aa5c-38f30c1abdb4}*SharedItemsImports = 5
 		Kernel\Kernel.projitems*{479ee355-d81e-4162-aa5c-38f30c1abdb4}*SharedItemsImports = 5
 		Corlib\Corlib.projitems*{4937d3a9-2f20-43ba-a794-89067f060502}*SharedItemsImports = 5
+		Kernel\Kernel.projitems*{4937d3a9-2f20-43ba-a794-89067f060502}*SharedItemsImports = 5
 		Corlib\Corlib.projitems*{51e1b402-1d4f-4c9b-831c-45c8603353d5}*SharedItemsImports = 13
 		CosmosCompatible\CosmosCompatible.projitems*{86e84b0f-9ede-4f25-ad24-75b350d6cb26}*SharedItemsImports = 13
 		Corlib\Corlib.projitems*{999bd9fb-7ef6-4d57-a700-0b6e865e909d}*SharedItemsImports = 5

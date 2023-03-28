@@ -18,6 +18,8 @@
 		<LinkerSubsystem>NATIVE</LinkerSubsystem>
 		<!--Make the code faster!-->
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
+		<!--Following line solves build error after upgrading to MSBuild version 17.5.0+6f08c67f3-->
+		<IlcPath>C:\Users\Administrator.SP\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
 	</PropertyGroup>
 
 	<!--CustomizeReferences-->
@@ -39,6 +41,9 @@
 
 	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile!-->
 	<ItemGroup>
+		<PackageDefinitions Include="MOOS" />
+		<PrivateSdkAssemblies Include="MOOS" />
+		<FrameworkAssemblies Include="MOOS" />
 		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
 	</ItemGroup>
 
@@ -60,6 +65,13 @@
 		<Error Text="Please install Intel Hardware Accelerated Execution Manager (HAXM) in order to speed up QEMU https://github.com/intel/haxm/releases" Condition="!Exists('C:\Program Files\Intel\HAXM\IntelHaxm.sys')"></Error>
 
 		<Exec Command="&quot;C:\\Program Files\\qemu\\qemu-system-x86_64.exe&quot; -accel hax -m 1024 -smp 2 -k en-gb -boot d -cdrom &quot;$(MSBuildProjectDirectory)\$(NativeOutputPath)$(TargetName).iso&quot; -d guest_errors -serial stdio -device AC97 -rtc base=localtime"></Exec>
+	</Target>
+
+	<Target Name="RunVMware" AfterTargets="BuildISO" Condition="$(vm) == 'vmware'">
+		<Error Text="Please install VMWare Player in order to Run MOOS!" Condition="!Exists('D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe')And!Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')"></Error>
+
+		<Exec Condition="Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')" Command="&quot;D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe&quot; &quot;$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.Console.vmx"></Exec>
+		<Exec Condition="Exists('D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe')And!Exists('D:\Program Files (x86)\VMware\VMware Workstation\vmplayer.exe')" Command="&quot;D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe&quot; &quot;$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.Console.vmx"></Exec>
 	</Target>
 
 	<Import Project="..\Corlib\Corlib.projitems" Label="Shared" />
