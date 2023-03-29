@@ -13,6 +13,8 @@ namespace MOOS
             Native.Out8(COM1 + 3, 0x03);    // 8 bits, no parity, one stop bit
             Native.Out8(COM1 + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
             Native.Out8(COM1 + 4, 0x0B);    // IRQs enabled, RTS/DSR set
+
+            WriteLine("COM1 is ready!");
         }
 
         public static void Write(string s)

@@ -1,10 +1,14 @@
 using System;
 using System.Runtime;
+
 #if BFLAT
 using System.Runtime.CompilerServices;
 #else
+
 using Internal.Runtime.CompilerServices;
+
 #endif
+
 using System.Runtime.InteropServices;
 
 namespace Internal.Runtime.CompilerHelpers
@@ -24,8 +28,7 @@ namespace Internal.Runtime.CompilerHelpers
         [RuntimeExport("memset")]
         private static unsafe void MemSet(byte* ptr, int c, int count)
         {
-            for (byte* p = ptr; p < ptr + count; p++)
-                *p = (byte)c;
+            for (byte* p = ptr; p < ptr + count; p++) *p = (byte)c;
         }
 
         [RuntimeExport("memcpy")]
@@ -157,8 +160,13 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
+        private static bool SupportsRelativePointers = false;
+
         public static void InitializeModules(IntPtr Modules)
         {
+#if BFLAT
+        SupportsRelativePointers =true;
+#endif
             for (int i = 0; ; i++)
             {
                 if (((IntPtr*)Modules)[i].Equals(IntPtr.Zero))
@@ -176,10 +184,11 @@ namespace Internal.Runtime.CompilerHelpers
                 {
                     if (sections[k].SectionId == ReadyToRunSectionType.GCStaticRegion)
                         InitializeStatics(sections[k].Start, sections[k].End);
-
+                    MOOS.Serial.WriteLine($"InitializeStatics...Passed!");
                     if (sections[k].SectionId == ReadyToRunSectionType.EagerCctor)
                         RunEagerClassConstructors(sections[k].Start, sections[k].End);
                 }
+                MOOS.Serial.WriteLine($"NumberOfSections...Exit!");
             }
 
             DateTime.s_daysToMonth365 = new int[]{
@@ -196,24 +205,35 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
+        private static void* ReadRelPtr32(void* address) => (byte*)address + *(int*)address;
+
         private static unsafe void InitializeStatics(IntPtr rgnStart, IntPtr rgnEnd)
         {
-            for (IntPtr* block = (IntPtr*)rgnStart; block < (IntPtr*)rgnEnd; block++)
-            {
-                var pBlock = (IntPtr*)*block;
-                var blockAddr = (long)(*pBlock);
+            MOOS.Serial.WriteLine($"InitializeStatics...Entered!rgnStart={rgnStart},{rgnEnd}");
 
+            var rgnEndPtr = (byte*)rgnEnd;
+            for (byte* block = (byte*)rgnStart; block < rgnEndPtr; block += SupportsRelativePointers ? sizeof(int) : sizeof(nint))
+            {
+                //var pBlock = (IntPtr*)*block;
+                IntPtr* pBlock = SupportsRelativePointers ? (IntPtr*)ReadRelPtr32(block) : *(IntPtr**)block;
+                MOOS.Serial.WriteLine($"block={(nint)pBlock}");
+                //var blockAddr = (long)*pBlock;
+                nint blockAddr = SupportsRelativePointers ? (nint)ReadRelPtr32(pBlock) : *pBlock;
+                MOOS.Serial.WriteLine($"block={blockAddr}");
                 if ((blockAddr & GCStaticRegionConstants.Uninitialized) == GCStaticRegionConstants.Uninitialized)
                 {
                     var obj = RhpNewFast((EEType*)(blockAddr & ~GCStaticRegionConstants.Mask));
 
                     if ((blockAddr & GCStaticRegionConstants.HasPreInitializedData) == GCStaticRegionConstants.HasPreInitializedData)
                     {
-                        IntPtr pPreInitDataAddr = *(pBlock + 1);
+                        MOOS.Serial.WriteLine("GCStaticRegionConstants.HasPreInitializedData...Entered!");
+                        //IntPtr pPreInitDataAddr = *(pBlock + 1);
+                        void* pPreInitDataAddr = SupportsRelativePointers ? ReadRelPtr32((int*)pBlock + 1) : (void*)*(pBlock + 1);
                         fixed (byte* p = &obj.GetRawData())
                         {
                             MemCpy(p, (byte*)pPreInitDataAddr, obj.GetRawDataSize());
                         }
+                        MOOS.Serial.WriteLine("GCStaticRegionConstants.HasPreInitializedData...Exit!");
                     }
 
                     var handle = malloc((ulong)sizeof(IntPtr));
@@ -221,6 +241,8 @@ namespace Internal.Runtime.CompilerHelpers
                     *pBlock = handle;
                 }
             }
+
+            MOOS.Serial.WriteLine("InitializeStatics...Exit!");
         }
     }
 }
