@@ -14,7 +14,7 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 
 事实是，BFlat不能直接构建MOOS，至少BFlat不读取.csproj文件。所以我写了[BFlatA](https://github.com/xiaoyuvax/bflata)这个工具，它是一个配合BFlat的套壳编译工具、编译脚本生成器以及用于BFlat的代码文件提取器（如果沿用bflat的哲学，称为“打平器”更有意思），它可以从一个根级csproj文件开始提取构建参数、文件引用、依赖项（如nuget包）和资源文件，然后允许执行BFlat从根.csproj文件开始构建在VS中编写的C#项目。您可以在[这里](https://github.com/xiaoyuvax/bflata)看更多详细信息并找到源代码。
 
-特别说明：由于BFlat自带的链接器可能跟MSVC库有一些不兼容（至少我使用的版本，但不一定在所有版本上都有问题），这里采用了MSVC的链接器取代了BFlat的自带链接器。
+特别说明：由于BFlat自带的链接器可能跟MSVC库有一些不兼容（至少我使用的MSVC版本，但不一定在所有版本上都有问题），这里采用了MSVC的链接器取代了BFlat的自带链接器。
 
 ## 总结一下:
 为了使用BFlat编译MOOS，你需要：
