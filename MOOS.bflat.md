@@ -3,7 +3,7 @@
 # How to compile MOOS with BFlat
 
 ## What is BFlat?
-BFlat is a C# native compiler offering a Go like buidling experience, which you may use to replace MSBuild. You can download BFlat binary [here](http://flattened.net), and check out the project [here](https://github.com/bflattened/bflat). 
+BFlat is a C# native compiler offering a Go like building experience, which you may use to replace MSBuild. You can download BFlat binary [here](http://flattened.net), and check out the project [here](https://github.com/bflattened/bflat). 
 Some charming features of BFlat: 
 - it doesn't need a project file, but simply builds all codes in a path structure directly into a single executable.
 - BFlat can build minimalist binary which runs on bare metal.
