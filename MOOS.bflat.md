@@ -20,8 +20,8 @@ Special Note: Since the linker comes with BFlat is not compatiable with the MSVC
 
 ## A summary:
 In order to build MOOS with BFlat, you need:
-- BFlat installed and the bin subdirectory set in %path% of system environment.
-- BFlatA built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
+- [BFlat](https://github.com/bflattened/bflat) installed and the bin subdirectory set in %path% of system environment.
+- [BFlatA](https://github.com/xiaoyuvax/bflata) built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
 - Make sure MSVC linker, namely "link.exe" is present on your system, if you have VS installed with C++ workload installed, then you've already had it.
 - Clone my forked version of MOOS which has been modified to be compatiable with building by both MSBuild + ILCompiler in VS and BFlatA+BFlat.
 
@@ -167,6 +167,8 @@ BFlatA output:
 	18089 extents written (35 MB)
 	Postbuild actions exit code:0 - ["'d:\repos\moos\Tools\mkisofs.exe' -relaxed-filenames -J -R -o MOOS.iso -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table  'd:\repos\moos\Tools\grub2'"]
 
+Then you will see MOOS launched in VMWare:
+![image](https://user-images.githubusercontent.com/6511226/228498471-0baf5415-b000-45f8-9c20-b35b3f634089.png)
 
 ## Modifications in MOOS Runtime
 
