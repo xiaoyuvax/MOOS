@@ -28,34 +28,34 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 ### 1.准备BFlatA用的编译参数
 把下面的参数文本保存到一个叫"moos.bfa"的文件, 其中所有路径应该按你的环境替换。
 
-	# BFlatA verb and project to build
-	## these two lines must present at the start in order.
+	# BFlatA 动词以及需要编译的项目
+	## 这两行必须依次列在开头
 	build
 	D:\Repos\MOOS\MOOS\MOOS.csproj
 
-	# Solution Home:
+	# 解决方案路径
 	-h:d:\repos\moos 
 
-	# Base lib selection:
-	## If there's <NoStdLib> tag in .csproj, you don't have to add this line below
+	# 基本库选择：
+	## 如果csproj文件中指定了<NoStdLib>拿可以不用写下面这行。
 	--stdlib None
 	--libc none
 
-	# Use external linker:
-	## The linker comes with BFlat has some problem with MSVC libs, we'll use MSVC Linker instead.
+	# 使用外部链接器：
+	## BFlat的链接器跟我用的MSVC库有点不兼容，所以这里使用了配套的链接器。你也可以尝试去掉这行直接使用bflat带的链接器。
 	--linker:"...\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
-	# Additional linker args:	
-	## Due to bflat's arg parsing bug, spaces in path does not work, may be replaced with short filenames like below or use single quotes "'" as inner quotation.
+	# 其他连接参数：
+	## 由于BFlat参数分析的bug，参数中带空格的路径无法工作，所以可以考虑采用无空格的短路径格式或者在内侧使用“'”。
 	--ldflags "/libpath:...\VC\Tools\MSVC\14.35.32215\lib\x64"
-	## The following line is not neccessary if you want an optimized release build
+	## 如果不需要生成调试版本，可以去掉下面这行。
 	## --ldflags "/DEBUG"
 
-	# Prebuild actions:
+	# 编译前动作：
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\Trampoline.asm' -o trampoline.o"
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\EntryPoint.asm' -o loader.o"
 
-	# Postbuild actions:
+	# 编译后动作：
 	-poa:cmd.exe /c copy /b loader.o + moos.exe "$(MSBuildStartupDirectory)\Tools\grub2\boot\kernel.bin"
 	-poa:"'$(MSBuildStartupDirectory)\Tools\mkisofs.exe' -relaxed-filenames -J -R -o MOOS.iso -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table  '$(MSBuildStartupDirectory)\Tools\grub2'"
 	-poa:"'D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe' '$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.flat.vmx'"
