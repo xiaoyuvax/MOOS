@@ -19,14 +19,19 @@ MOOS (To Make **M**y **O**wn **O**perating **S**ystem Project) is a C# x64 opera
 
 ## Building
 
-This fork has modified the codes and relevant configurations to allow MOOS be compiled by an alternative C# native compiler BFlat, read [How to compile MOOS with BFlat](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md). Of course, you can still build MOOS in VS with MSBuild, although it uses an ancient verison of ILCompiler.
+This fork has modified the codes and relevant configurations specially to allow MOOS be compiled by an alternative C# native compiler BFlat, read [How to compile MOOS with BFlat](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bflat.md). Of course, you can still build MOOS in VS with MSBuild, although it uses an ancient verison of ILCompiler.
 
 For more information on compiling MOOS, please read the [build wiki page](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F).
 
 
 ### Build requirements
+Compiler/IDE :
+- Visual studio 2022 (MSBuild + ILCompiler) - https://visualstudio.microsoft.com/  
+OR
+- BFlat 7.0 and above - http://flattened.net/ + BFlatA - https://github.com/xiaoyuvax/bflata
+
+Environment:
 - VMware Workstation Player - https://www.vmware.com/products/workstation-player.html
-- Visual studio 2022 - https://visualstudio.microsoft.com/
 - QEMU - https://www.qemu.org/download or VMWare ( Note - USB Does not work with VMWare and you need x64 if you want to run VMware, 32 bit is not supported )
 - Windows 10-11 x64 or x86
 - A CPU from at least 2012 or newer, or in basic terms an Ivy Bridge CPU or over
