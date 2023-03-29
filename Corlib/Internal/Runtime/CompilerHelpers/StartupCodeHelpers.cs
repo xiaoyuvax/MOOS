@@ -209,31 +209,23 @@ namespace Internal.Runtime.CompilerHelpers
 
         private static unsafe void InitializeStatics(IntPtr rgnStart, IntPtr rgnEnd)
         {
-            MOOS.Serial.WriteLine($"InitializeStatics...Entered!rgnStart={rgnStart},{rgnEnd}");
-
             var rgnEndPtr = (byte*)rgnEnd;
             for (byte* block = (byte*)rgnStart; block < rgnEndPtr; block += SupportsRelativePointers ? sizeof(int) : sizeof(nint))
             {
-                //var pBlock = (IntPtr*)*block;
                 IntPtr* pBlock = SupportsRelativePointers ? (IntPtr*)ReadRelPtr32(block) : *(IntPtr**)block;
-                MOOS.Serial.WriteLine($"block={(nint)pBlock}");
-                //var blockAddr = (long)*pBlock;
                 nint blockAddr = SupportsRelativePointers ? (nint)ReadRelPtr32(pBlock) : *pBlock;
-                MOOS.Serial.WriteLine($"block={blockAddr}");
                 if ((blockAddr & GCStaticRegionConstants.Uninitialized) == GCStaticRegionConstants.Uninitialized)
                 {
                     var obj = RhpNewFast((EEType*)(blockAddr & ~GCStaticRegionConstants.Mask));
 
                     if ((blockAddr & GCStaticRegionConstants.HasPreInitializedData) == GCStaticRegionConstants.HasPreInitializedData)
                     {
-                        MOOS.Serial.WriteLine("GCStaticRegionConstants.HasPreInitializedData...Entered!");
                         //IntPtr pPreInitDataAddr = *(pBlock + 1);
                         void* pPreInitDataAddr = SupportsRelativePointers ? ReadRelPtr32((int*)pBlock + 1) : (void*)*(pBlock + 1);
                         fixed (byte* p = &obj.GetRawData())
                         {
                             MemCpy(p, (byte*)pPreInitDataAddr, obj.GetRawDataSize());
                         }
-                        MOOS.Serial.WriteLine("GCStaticRegionConstants.HasPreInitializedData...Exit!");
                     }
 
                     var handle = malloc((ulong)sizeof(IntPtr));
