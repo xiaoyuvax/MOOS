@@ -9,7 +9,7 @@ BFlat的一些优点：
 - BFlat可以构建在裸机上运行的最小化的二进制文件。
 
 MOOS是在VS中编写的，因此存在复杂的项目结构和大量的描述文件，例如必须为MSBuild提供.csproj文件。此外，MOOS需要ILCompiler，这是一个Nuget包，附带了将Dotnet IL二进制代码编译为本机代码的工具，这是在Dotnet8之前的NativeAOT的编译方式。但是，BFlat可以算是NativeAOT的另一种感觉更直觉一点的编译器。
-此外，MOOS还包括了一些MASM和C++代码，这些代码应该被单独编译。这里我们只讨论在MOOS中构建C#代码的问题。
+此外，MOOS还包括了一些NASM和C++代码，这些代码应该被单独编译。这里我们只讨论在MOOS中构建C#代码的问题。
 MOOS的一个问题是，它目前只能使用一个古老且修改过的版本的ILComplier构建，这使得它与最新的dotnet运行时不兼容（请参见下面的MOOS运行时更改），这也是我寻找不同且更新的本地编译器（例如BFlat）的部分原因。
 
 事实是，BFlat不能直接构建MOOS，至少BFlat不读取.csproj文件。所以我写了[BFlatA](https://github.com/xiaoyuvax/bflata)这个工具，它是一个配合BFlat的套壳编译工具、编译脚本生成器以及用于BFlat的代码文件提取器（如果沿用bflat的哲学，称为“打平器”更有意思），它可以从一个根级csproj文件开始提取构建参数、文件引用、依赖项（如nuget包）和资源文件，然后允许执行BFlat从根.csproj文件开始构建在VS中编写的C#项目。您可以在[这里](https://github.com/xiaoyuvax/bflata)看更多详细信息并找到源代码。
