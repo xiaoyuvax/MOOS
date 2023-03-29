@@ -27,7 +27,7 @@ In order to build MOOS with BFlat, you need:
 
 ## Building Steps
 ### 1.Prepare args for BFlatA 
-Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.Make sure you have all needed files meantioned below including the MSVC linker of proper version in your system.
+Save the following text to a "moos.bfa" file(or download it [here](https://github.com/xiaoyuvax/MOOS/blob/master/MOOS.bfa)), all paths inside shall be reviewed to suit your environment.Make sure you have all needed files meantioned below including the MSVC linker of proper version in your system.
 This .bfa file have included all Prebuild Actions such as invoking nasm.exe to compile the .asm codes and Postbuild Actions such as packing MOOS into ramdisk, making ISO image and starting VMWare Player.
 
 	# BFlatA verb and project to build
