@@ -24,8 +24,13 @@ MOOS ( **M**y **O**wn **O**perating **S**ystem )是一个使用.NET Native AOT�
 关于编译MOOS的信息，请阅读 [编译维基页面](https://github.com/nifanfa/MOOS/wiki/How-do-you-build-or-compile-MOOS%3F)。
 
 ### 编译要求
+编译器/IDE :
+- Visual studio 2022 (MSBuild + ILCompiler) - https://visualstudio.microsoft.com/  
+或
+- BFlat 7.0 and above - http://flattened.net/ + BFlatA - https://github.com/xiaoyuvax/bflata
+
+环境：
 - VMware Workstation Player - https://www.vmware.com/products/workstation-player.html
-- Visual studio 2022 - https://visualstudio.microsoft.com/
 - QEMU - https://www.qemu.org/download 或 VMWare ( 注意，VMware不支持USB键鼠模拟。 )
 - Windows 10-11 x64或x86
 - 8GB Ram
