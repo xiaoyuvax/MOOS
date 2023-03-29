@@ -16,7 +16,7 @@ A problem with MOOS is that it can only be built with an acnient and modified ve
 
 The fact is, BFlat cannot build MOOS directly, at least BFlat doesn't read .csproj file. That's why(of course not for MOOS only) I wrote [BFlatA](https://github.com/xiaoyuvax/bflata), a small wrapper and buildscript generater as well as project flattener for BFlat, which can extract build arguments, file references, dependencies(such as nuget package) and resources from project hierachy starting from a root csproj file, and then allowing executing BFlat to build a C# project written in VS starting from a root .csproj file. You can read more details and find the source code [here](https://github.com/xiaoyuvax/bflata).
 
-Special Note: Since the linker comes with BFlat is not compatiable with the MSVC static libs referenced(at least version that i used, maybe not for other), so i used the MSVC linker comes with that lib as to avoid problem.
+Special Note: Since the linker comes with BFlat is not compatiable with the MSVC static libs referenced(at least MSVC version that i used, maybe not for other), so i used the MSVC linker comes with that lib as to avoid problem.
 
 ## A summary:
 In order to build MOOS with BFlat, you need:
