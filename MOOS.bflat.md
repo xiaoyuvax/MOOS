@@ -21,8 +21,8 @@ Special Note: Since the linker comes with BFlat is not compatiable with the MSVC
 ## A summary:
 In order to build MOOS with BFlat, you need:
 - [BFlat](https://github.com/bflattened/bflat) installed and the bin subdirectory set in %path% of system environment.
-- [BFlatA](https://github.com/xiaoyuvax/bflata) built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
-- Make sure MSVC linker, namely "link.exe" is present on your system, if you have VS installed with C++ workload installed, then you've already had it.
+- [BFlatA](https://github.com/xiaoyuvax/bflata) built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy the bflata executable to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
+- Make sure MSVC linker, namely "link.exe" is present in your system. If you have VS installed with C++ workload installed, then you've already had it.
 - Clone [my forked version of MOOS](https://github.com/xiaoyuvax/MOOS) which has been modified to be compatiable with building by both MSBuild + ILCompiler in VS and BFlatA+BFlat.
 
 ## Building Steps
