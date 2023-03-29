@@ -19,10 +19,10 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 ## 总结一下:
 为了使用BFlat编译MOOS，你需要：
 
-- 安装BFlat，并将其bin子目录设置在系统环境的%path%中。
-- 从源码编译BFlatA（仅一个代码文件）。你可以在VS中编译，也可以简单地通过BFlat编译（推荐），然后你可以将bflata.exe复制到BFlat的/bin/路径中，这样它就可以在任何地方运行，因为%path%已经设置好了。
+- 安装[BFlat](https://github.com/bflattened/bflat)，并将其bin子目录设置在系统环境的%path%中。
+- 从源码编译[BFlatA](https://github.com/xiaoyuvax/bflata)（仅一个代码文件）。你可以在VS中编译，也可以简单地通过BFlat编译（推荐），然后你可以将bflata.exe复制到BFlat的/bin/路径中，这样它就可以在任何地方运行，因为%path%已经设置好了。
 - 你的系统上需要装有MSVC链接器(link.exe)。如果已经安装了VS和C++组件，那么就应该已经有了。
-- 克隆我的这个MOOS分支版本，这个版本中做了相应的修改以兼容既能够在VS中用MSBuild + ILCompiler编译也能够使用BFlatA + BFlat编译(但最后都是用MSVC Linker链接)。
+- 克隆[我的这个MOOS分叉版本](https://github.com/xiaoyuvax/MOOS)，这个版本中做了相应的修改以兼容既能够在VS中用MSBuild + ILCompiler编译也能够使用BFlatA + BFlat编译(但最后都是用MSVC Linker链接)。
 
 ## 编译步骤
 ### 1.准备BFlatA用的编译参数
