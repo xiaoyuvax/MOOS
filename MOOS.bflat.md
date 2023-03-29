@@ -20,11 +20,12 @@ The fact is, BFlat cannot build MOOS directly, at least BFlat doesn't read .cspr
 In order to build MOOS with BFlat, you need:
 - BFlat installed and the bin subdirectory set in %path% of system environment.
 - BFlatA built from source (one code file only), you may build it in VS or by BFlat simply (recommended), and then you may copy bflata.exe to the /bin/ path of BFlat, so that it can be run anywhere, since the %path%'s already set.
+- Make sure MSVC linker, namely "link.exe" is present on your system, if you have VS installed with C++ workload installed, then you've already had it.
 - Clone my forked version of MOOS which has been modified to be compatiable with building by both MSBuild + ILCompiler in VS and BFlatA+BFlat.
 
 ## Building Steps
-### 1.Prepare args for BFlatA
-Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.
+### 1.Prepare args for BFlatA 
+Save the following text to a "moos.bfa" file, all paths inside shall be reviewed to suit your environment.Make sure you have all needed files meantioned below including the MSVC linker of proper version in your system.
 This .bfa file have included all Prebuild Actions such as invoking nasm.exe to compile the .asm codes and Postbuild Actions such as packing MOOS into ramdisk, making ISO image and starting VMWare Player.
 
 	# BFlatA verb and project to build
