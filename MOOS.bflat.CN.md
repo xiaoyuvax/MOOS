@@ -164,6 +164,9 @@ BFlatA输出:
 	Path table size(bytes): 50
 	18089 extents written (35 MB)
 	Postbuild actions exit code:0 - ["'d:\repos\moos\Tools\mkisofs.exe' -relaxed-filenames -J -R -o MOOS.iso -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table  'd:\repos\moos\Tools\grub2'"]
+	
+编译完应该能够看到MOOS在VMWare中启动：
+![image](https://user-images.githubusercontent.com/6511226/228498471-0baf5415-b000-45f8-9c20-b35b3f634089.png)
 
 ## MOOS自带运行时库内的更改
 
