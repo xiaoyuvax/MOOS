@@ -63,7 +63,7 @@ This .bfa file have included all Prebuild Actions such as invoking nasm.exe to c
 
     bflata -inc:moos.bfa
 
-All file output should be at current directionary, including build scripts like build.rsp, link.rsp, binary output like MOOS.obj and MOOS.exe, etc., and ISO image MOOS.iso, which shall be correctly specified in the MOOS.flat.vmx file for VMWare to locate the disc image.
+All file output should be at current directary, including build scripts like build.rsp, link.rsp, binary output like MOOS.obj and MOOS.exe, etc., and ISO image MOOS.iso, which shall be correctly specified in the MOOS.flat.vmx file for VMWare to locate the disc image.
 
 BFlatA output:
 
