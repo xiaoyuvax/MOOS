@@ -25,35 +25,48 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 ### 1.准备BFlatA用的编译参数
 把下面的参数文本保存到一个叫"moos.bfa"的文件, 其中所有路径应该按你的环境替换。
 
-	#BFlatA的动词和编译目标，必须放在前两行（目前）。
+	# BFlatA verb and project to build
+	## these two lines must present at the start in order.
 	build
-	..\MOOS\MOOS\moos.csproj
+	D:\Repos\MOOS\MOOS\MOOS.csproj
 
-	#解决方案根路径
+	# Solution Home:
 	-h:d:\repos\moos 
 
-	#基本库选择:
-	#如果.csproj文件中有指定<NoStdLib> 就不用下面这第一行了。
+	# Base lib selection:
+	## If there's <NoStdLib> tag in .csproj, you don't have to add this line below
 	--stdlib None
 	--libc none
 
-	#使用外部链接器：
-	#BFlat自带的链接器使用MSVC的静态库的时候有点问题，所以使用--linker指定外部连接器防止BFlat调用自己的链接器。这里我们用MSVC的链接器。
+	# Use external linker:
+	## The linker comes with BFlat has some problem with MSVC libs, we'll use MSVC Linker instead.
 	--linker:"...\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
 
-	#其他链接器参数：
-	#BFlat不生成下面这个.res文件，但好像MOOS如果不嵌入这个文件，就无法工作，所以还是需要引用一下，这个文件得靠MSBuild生成，这个我暂时也很无奈。
-	--ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res"		
-	--ldflags "/libpath:...\Tools\MSVC\14.35.32215\lib\x64"
+	# Additional linker args:	
+	## Due to bflat's arg parsing bug, spaces in path does not work, may be replaced with short filenames like below or use single quotes "'" as inner quotation.
+	--ldflags "/libpath:...\VC\Tools\MSVC\14.35.32215\lib\x64"
+	## The following line is not neccessary if you want an optimized release build
+	## --ldflags "/DEBUG"
+
+	# Prebuild actions:
+	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\Trampoline.asm' -o trampoline.o"
+	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\EntryPoint.asm' -o loader.o"
+
+	# Postbuild actions:
+	-poa:cmd.exe /c copy /b loader.o + moos.exe "$(MSBuildStartupDirectory)\Tools\grub2\boot\kernel.bin"
+	-poa:"'$(MSBuildStartupDirectory)\Tools\mkisofs.exe' -relaxed-filenames -J -R -o MOOS.iso -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table  '$(MSBuildStartupDirectory)\Tools\grub2'"
+	-poa:"'D:\Program Files (x86)\VMware\VMware Player\vmplayer.exe' '$(MSBuildStartupDirectory)\Tools\VMWare\MOOS\MOOS.flat.vmx'"
 
 ### 2.确保%PATH%变量中设好了BFlat和BFlatA的路径。
 ### 3.运行BFlatA 
 
     bflata -inc:moos.bfa
 
+所有的输出都将位于当前目录，包括编译脚本，诸如 build.rsp, link.rsp；二进制文件输出，如MOOS.obj, MOOS.exe等；还有光盘ISO映像MOOS.iso。你必须在指定的VMWare虚拟机配置文件MOOS.flat.vmx指定到此iso映像的正确路径才能正常启动虚拟机。
+
 BFlatA输出:
 
-	BFlatA V1.4.2.0 @github.com/xiaoyuvax/bflata
+	BFlatA V1.4.2.2 @github.com/xiaoyuvax/bflata
 	Description:
 	  A wrapper/build script generator for BFlat, a native C# compiler, for recusively building .csproj file with:
 	    - Referenced projects
@@ -67,60 +80,87 @@ BFlatA输出:
 	BuildMode       :Flat
 	DepositDep      :Off
 	Target          :Exe
+	TargetOS        :windows
 	Output          :<Default>
 	TargetFx        :net7.0
 	PackageRoot     :<N/A>
 	Home            :d:\repos\moos
 	BFA Includes    :1
-	Args for BFlat  :--stdlib None --libc none -c --ldflags "D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res" --ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64"
+	Args for BFlat  :--stdlib None --libc none --ldflags "/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64" -c
 
 	--LIB EXCLU---------------------------
 	--LIB CACHE---------------------------
 
 
 	--PARSING-----------------------------
-	Parsing Project:D:\Repos\MOOS\MOOS\moos.csproj ...
+	Parsing Project:D:\Repos\MOOS\MOOS\MOOS.csproj ...
 		       NativeLib        [Include]       9 items added!
 	Parsing Project:D:\Repos\MOOS\Kernel\Kernel.projitems ...
 		  CompileInclude        [Include]       6400 items added!
 	Parsing Project:D:\Repos\MOOS\Corlib\Corlib.projitems ...
-		  CompileInclude        [Include]       12996 items added!
+		  CompileInclude        [Include]       12769 items added!
 
 	--SCRIPTING---------------------------
-	Generating build script for:moos
-	- Found 10 args to be passed to BFlat.
-	- Found 215 code files(*.cs)
+	Generating build script for:MOOS
+	- Found 7 args to be passed to BFlat.
+	- Found 216 code files(*.cs)
 	- Found 3 dependent native libs(*.lib|*.a)
-	Build script's written!
+	Script:build.rsp written!
 
+
+	--PREBUILD-ACTIONS-------------------
+	Prebuild actions exit code:0 - ["'d:\repos\moos\Tools\nasm.exe' -fbin 'd:\repos\moos\Tools\Trampoline.asm' -o trampoline.o"]
+	d:\repos\moos\Tools\EntryPoint.asm:338: warning: uninitialized space declared in .text section: zeroing [-w+zeroing]
+	d:\repos\moos\Tools\EntryPoint.asm:342: warning: uninitialized space declared in .text section: zeroing [-w+zeroing]
+	d:\repos\moos\Tools\EntryPoint.asm:344: warning: uninitialized space declared in .text section: zeroing [-w+zeroing]
+	d:\repos\moos\Tools\EntryPoint.asm:346: warning: uninitialized space declared in .text section: zeroing [-w+zeroing]
+	Prebuild actions exit code:0 - ["'d:\repos\moos\Tools\nasm.exe' -fbin 'd:\repos\moos\Tools\EntryPoint.asm' -o loader.o"]
 
 	--BUILDING----------------------------
-	Building in FLAT mode:moos...
+	Building in FLAT mode:MOOS...
 	- Executing build script: bflat build @build.rsp...
 	Compiler exit code:0
+	Script:link.rsp written!
+
 	Microsoft (R) Incremental Linker Version 14.35.32215.0
 	Copyright (C) Microsoft Corporation.  All rights reserved.
 
-	moos.obj
+	MOOS.obj
+	/fixed
+	/base:0x10000000
+	/map:Kernel.map
 	/ENTRY:Entry
 	/SUBSYSTEM:NATIVE
 	/INCREMENTAL:no
-	/fixed
-	/base:0x10000000
-	D:\Repos\MOOS\MOOS\obj\debug\net7.0\win-x64\native\MOOS.res
 	/libpath:C:\Progra~1\Micros~4\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64
 	d:\repos\moos\x64\Debug\NativeLib.lib
 	d:\repos\moos\x64\Debug\LibC.lib
 	d:\repos\moos\x64\Debug\Doom.lib
 	NativeLib.lib(interrupts.obj) : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/OPT:ICF”规范)
-	LINK : warning LNK4217:符号“free”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_free”中)导入LINK : warning LNK4217:符号“malloc”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_malloc”中)导入
-	LINK : warning LNK4217:符号“realloc”(在“ moos.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_realloc”中)导入
+	LINK : warning LNK4217:符号“free”(在“ MOOS.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_free”中)导入
+	LINK : warning LNK4217:符号“malloc”(在“ MOOS.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_malloc”中)导入
+	LINK : warning LNK4217:符号“realloc”(在“ MOOS.obj”中定义)已由“NativeLib.lib(lodepng.obj)”(函数“lodepng_realloc”中)导入
 	LINK : warning LNK4281:x64 映像的基址 0x10000000 不适当；将基址设为 4 GB 以上以实现最佳 ASLR 优化
 	Linker exit code:0
-	--END---------------------------------
 
-## 后续工作
-现在你在当前路径会看到moos.exe(除非用在 moos.bfa中指定了-o:<output file>选项，默认是在当前路径)， 剩下的工作就是把MOOS.exe跟用宏汇编编译的loader.o文件合并成kernel.bin，然后最后的一步就是利用Grub2将kernel.bin打包到一个光盘映像文件(.iso)，保证Grub启动后会加载kernel.bin，这些在MOOS.csproj里面都写得很清楚。
+	--POSTBUILD-ACTIONS------------------
+	loader.o
+	MOOS.exe
+	已复制         1 个文件。
+	Postbuild actions exit code:0 - [cmd.exe /c copy /b loader.o + moos.exe "d:\repos\moos\Tools\grub2\boot\kernel.bin"]
+	mkisofs: Warning: -rock has same effect as -rational-rock on this platform.
+	Warning: creating filesystem that does not conform to ISO-9660.
+	Using PART_000.MOD;1 for  d:\repos\moos\Tools\grub2/boot/grub/i386-pc/part_sunpc.mod (part_sun.mod)
+	Size of boot image is 4 sectors -> No emulation
+	 27.69% done, estimate finish Wed Mar 29 16:26:48 2023
+	 55.28% done, estimate finish Wed Mar 29 16:26:48 2023
+	 82.97% done, estimate finish Wed Mar 29 16:26:48 2023
+	Total translation table size: 2048
+	Total rockridge attributes bytes: 3636
+	Total directory bytes: 10720
+	Path table size(bytes): 50
+	18089 extents written (35 MB)
+	Postbuild actions exit code:0 - ["'d:\repos\moos\Tools\mkisofs.exe' -relaxed-filenames -J -R -o MOOS.iso -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table  'd:\repos\moos\Tools\grub2'"]
 
 ## MOOS自带运行时库内的更改
 
