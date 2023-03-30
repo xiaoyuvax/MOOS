@@ -223,5 +223,5 @@ Run this in commmand line, will initiate the build process.
 ```
 bflata MOOS.flat.bfa
 ```
-Args in both MOOS.flat.bfa and ./MOOS.flat/MOOS.bfa will be merged together to build the project, the result would be the same with the building process we introduced at the top of this article. The only difference is that the project sources have been moved to a new places, which can no longer be built by VS.
+Args in both MOOS.flat.bfa and ./MOOS.flat/MOOS.bfa will be merged together to build the project, the result would be the same with the building process we introduced at the top of this article. The only difference is that the project sources have been extracted(and cloned) to a new places, which can no longer be built by VS.
 
