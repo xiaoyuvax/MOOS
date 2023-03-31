@@ -184,11 +184,9 @@ namespace Internal.Runtime.CompilerHelpers
                 {
                     if (sections[k].SectionId == ReadyToRunSectionType.GCStaticRegion)
                         InitializeStatics(sections[k].Start, sections[k].End);
-                    MOOS.Serial.WriteLine($"InitializeStatics...Passed!");
                     if (sections[k].SectionId == ReadyToRunSectionType.EagerCctor)
                         RunEagerClassConstructors(sections[k].Start, sections[k].End);
                 }
-                MOOS.Serial.WriteLine($"NumberOfSections...Exit!");
             }
 
             DateTime.s_daysToMonth365 = new int[]{
@@ -233,8 +231,6 @@ namespace Internal.Runtime.CompilerHelpers
                     *pBlock = handle;
                 }
             }
-
-            MOOS.Serial.WriteLine("InitializeStatics...Exit!");
         }
     }
 }
