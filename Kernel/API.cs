@@ -25,11 +25,11 @@ namespace MOOS
     {
         public static unsafe void* HandleSystemCall(string name)
         {
+            Serial.Write(nameof(API) + ":" + name + "=>\t");
             void* api = name switch
             {
                 "SayHello" => (delegate*<void>)&SayHello,
                 "WriteLine" => (delegate*<void>)&API_WriteLine,
-                "DebugWriteLine" => (delegate*<void>)&API_DebugWriteLine,
                 "Allocate" => (delegate*<ulong, nint>)&API_Allocate,
                 "Reallocate" => (delegate*<nint, ulong, nint>)&API_Reallocate,
                 "Free" => (delegate*<nint, ulong>)&API_Free,
@@ -37,7 +37,6 @@ namespace MOOS
                 "GetTick" => (delegate*<ulong>)&API_GetTick,
                 "ReadAllBytes" => (delegate*<string, ulong*, byte**, void>)&API_ReadAllBytes,
                 "Write" => (delegate*<char, void>)&API_Write,
-                "DebugWrite" => (delegate*<char, void>)&API_DebugWrite,
                 "SwitchToConsoleMode" => (delegate*<void>)&API_SwitchToConsoleMode,
                 "DrawPoint" => (delegate*<int, int, uint, void>)&API_DrawPoint,
                 "Lock" => (delegate*<void>)&API_Lock,
@@ -59,6 +58,12 @@ namespace MOOS
                 "Calloc" => (delegate*<ulong, ulong, void*>)&API_Calloc,
                 "SndWrite" => (delegate*<byte*, int, int>)&API_SndWrite,
 
+                #region Debugger
+
+                "DebugWrite" => (delegate*<string, void>)&API_DebugWrite,
+
+                #endregion Debugger
+
                 #region System.Console
 
                 "WriteFrameBuffer" => (delegate*<char, void>)&API_WriteFramebuffer,
@@ -73,6 +78,7 @@ namespace MOOS
                 "GetTimerTicks" => (delegate*<ulong>)&API_GetTimerTicks,
                 "NativeHlt" => (delegate*<void>)&API_NativeHlt,
                 "InvokeOnWriteHanlder" => (delegate*<char, void>)&API_InvokeOnWriteHanlder,
+
                 #endregion System.Console
 
                 _ => null
@@ -162,7 +168,6 @@ namespace MOOS
             ulong hour = RTC.Hour;
             ulong minute = RTC.Minute;
             ulong second = RTC.Second;
-
             ulong time = 0;
 
             time |= century << 56;
@@ -184,6 +189,7 @@ namespace MOOS
         public static void API_WriteString(string s)
         {
             Console.Write(s);
+            ComDebugger.Info(nameof(API_WriteString), s);
             s.Dispose();
         }
 
@@ -199,16 +205,7 @@ namespace MOOS
         public static void API_Clear(uint color) => Framebuffer.Graphics.Clear(color);
 
         [RuntimeExport("DebugWrite")]
-        public static void API_DebugWrite(char c)
-        {
-            Serial.Write(c);
-        }
-
-        [RuntimeExport("DebugWriteLine")]
-        public static void API_DebugWriteLine()
-        {
-            Serial.WriteLine();
-        }
+        public static void API_DebugWrite(string msg) => ComDebugger.DebugWrite(msg);
 
         [RuntimeExport("Lock")]
         public static void API_Lock()

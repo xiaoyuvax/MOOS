@@ -1,4 +1,7 @@
 using Internal.Runtime.CompilerHelpers;
+#if Kernel
+using MOOS;
+#endif
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
@@ -31,12 +34,11 @@ namespace System.Diagnostics
                     memcpy((byte*)((ulong)newPtr + sections[i].VirtualAddress), ptr + sections[i].PointerToRawData, sections[i].SizeOfRawData);
                 }
                 FixImageRelocations(newdoshdr, newnthdr, (long)((ulong)newPtr - newnthdr->OptionalHeader.ImageBase));
-
                 delegate*<void> p = (delegate*<void>)((ulong)newPtr + newnthdr->OptionalHeader.AddressOfEntryPoint);
                 //TO-DO disposing
                 StartupCodeHelpers.InitializeModules(moduleSeg);
                 StartThread(p);
-                //StartupCodeHelpers.free((IntPtr)ptr);
+                //StartupCodeHelpers.free((IntPtr)ptr);                
             }
         }
 

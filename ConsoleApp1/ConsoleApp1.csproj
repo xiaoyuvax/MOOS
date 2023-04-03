@@ -5,37 +5,24 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<BaseOutputPath>..\bin</BaseOutputPath>
-		
+
 		<Optimize>true</Optimize>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 
 		<IlcSystemModule>ConsoleApp1</IlcSystemModule>
-		<EntryPointSymbol>Entry</EntryPointSymbol>
+		<EntryPointSymbol>Main</EntryPointSymbol>
 		<LinkerSubsystem>NATIVE</LinkerSubsystem>
 		<!--Make the code faster!-->
 		<IlcOptimizationPreference>Speed</IlcOptimizationPreference>
 		<!--Following line solves build error after upgrading to MSBuild version 17.5.0+6f08c67f3-->
-		<IlcPath>C:\Users\Administrator.SP\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
-		<DefineConstants>Kernel;UseAPIC</DefineConstants>
+		<IlcPath>C:\Users\Administrator.sp\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.22074.1</IlcPath>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\NativeLib.lib" />
-		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\LibC.lib" />
-		<NativeLibrary Include="$(MSBuildStartupDirectory)\x64\Debug\Doom.lib" />
-		<!--<RuntimeAssembly Include="MOOS"></RuntimeAssembly>-->
-	</ItemGroup>
-
-	<ItemGroup>
-		<LinkerArg Include="/fixed /base:0x10000000 /map:Kernel.map" />
-	</ItemGroup>
 
 	<Target Name="RenameExt" AfterTargets="CopyNativeBinary">
 		<!--.MUE(MOOS User Executable)-->
 		<Copy SourceFiles="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)" DestinationFiles="$(NativeOutputPath)$(TargetName).mue"></Copy>
-		<Copy SourceFiles="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)" DestinationFiles="$(MSBuildStartupDirectory)\..\Ramdisk\$(TargetName).mue"></Copy>
 		<Delete Files="$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)"></Delete>
 	</Target>
 
@@ -54,13 +41,8 @@
 	<!--Warning: This package is modified(/packages). Using official one may cause it fail to compile!-->
 	<ItemGroup>
 		<PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-alpha.1.22074.1" />
-		<PackageDefinitions Include="MOOS" />
-		<PrivateSdkAssemblies Include="MOOS" />
-		<FrameworkAssemblies Include="MOOS" />
 	</ItemGroup>
 
 	<Import Project="..\Corlib\Corlib.projitems" Label="Shared" />
-
-	<Import Project="..\Kernel\Kernel.projitems" Label="Shared" />
 
 </Project>

@@ -11,7 +11,7 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 
-		<DefineConstants>Kernel;UseAPIC;HasGUI</DefineConstants>
+		<DefineConstants>Kernel;UseAPIC;HasGUI;ComDebugger</DefineConstants>
 
 		<IlcSystemModule>MOOS</IlcSystemModule>
 		<EntryPointSymbol>Entry</EntryPointSymbol>

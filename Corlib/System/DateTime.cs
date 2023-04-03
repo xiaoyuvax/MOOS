@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -1020,7 +1019,7 @@ namespace System
             day = n - days[m - 1] + 1;
         }
 
-        /*
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void GetTime(out int hour, out int minute, out int second)
         {
@@ -1056,7 +1055,7 @@ namespace System
             minute = (int)m;
             hour = (int)(n % 24);
         }
-        */
+
 
         // Returns the day-of-month part of this DateTime. The returned
         // value is an integer between 1 and 31.
@@ -1136,7 +1135,6 @@ namespace System
             get
             {
                 ulong time = GetTime();
-
                 int century =     (int)((time & 0xFF_00_00_00_00_00_00_00)>>56);
                 int year =        (int)((time & 0x00_FF_00_00_00_00_00_00)>>48);
                 int month =       (int)((time & 0x00_00_FF_00_00_00_00_00)>>40);

@@ -1,10 +1,9 @@
-using System;
-
 namespace MOOS
 {
     public class Serial
     {
         public const ushort COM1 = 0x3F8;
+
         //public const ushort COM2 = 0x2F8;
         //public const ushort COM3 = 0x3E8;
         //public const ushort COM4 = 0x2E8;
@@ -12,6 +11,7 @@ namespace MOOS
         //public const ushort COM6 = 0x4F8;
         //public const ushort COM7 = 0x5E8;
         //public const ushort COM8 = 0x4E8;
+        public static bool IsInitialized = false;
 
         public static void Initialise()
         {
@@ -24,6 +24,13 @@ namespace MOOS
             Native.Out8(COM1 + 4, 0x0B);    // IRQs enabled, RTS/DSR set
 
             WriteLine("COM1 is ready!");
+            IsInitialized = true;
+        }
+
+        public static char ReadSerial()
+        {
+            while (serialReceived() == 0) ;
+            return (char)Native.In8(COM1);
         }
 
         public static void Write(string s)
@@ -41,8 +48,6 @@ namespace MOOS
             Native.Out8(COM1, (byte)(c & 0xFF));
         }
 
-        private static int isTransmitEmpty() => Native.In8(COM1 + 5) & 0x20;
-
         public static void WriteLine(string s)
         {
             Write(s);
@@ -56,27 +61,8 @@ namespace MOOS
             Write('\n');
         }
 
+        private static int isTransmitEmpty() => Native.In8(COM1 + 5) & 0x20;
+
         private static int serialReceived() => Native.In8(COM1 + 5) & 1;
-
-        public static char ReadSerial()
-        {
-            while (serialReceived() == 0) ;
-            return (char)Native.In8(COM1);
-        }
-    }
-
-    public class ComDebugger
-    {
-        public static void Info(string module, string msg) => DebugModuleWrite(module, $"INFO\t{msg}");
-
-        public static void Debug(string module, string msg) => DebugModuleWrite(module, $"DEBUG\t{msg}");
-
-        public static void Error(string module, string msg) => DebugModuleWrite(module, $"Error\t{msg}");
-
-        public static void Warn(string module, string msg) => DebugModuleWrite(module, $"WARN\t{msg}");
-
-        public static void DebugModuleWrite(string module, string msg) => Serial.WriteLine($"{DateTime.Now}\t{module}\t{msg}");
-
-        public static void DebugWrite(string msg) => Serial.WriteLine($"{DateTime.Now}\t{msg}");
     }
 }

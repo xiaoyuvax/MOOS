@@ -21,6 +21,9 @@ namespace Snake
         [DllImport("WriteLine")]
         public static extern void WriteLine();
 
+        [DllImport("WriteString")]
+        public static extern void WriteString(string str);
+
         [DllImport("ReadAllBytes")]
         public static extern void ReadAllBytes(string name, out ulong size, out byte* data);
 
@@ -30,10 +33,12 @@ namespace Snake
         [RuntimeExport("Main")]
         public static void Main()
         {
+            WriteString("Snake Entry");
+            WriteLine();
             Console.Setup();
-            Console.WriteLine("TEXT");
+            Console.WriteLine("Snake Game");
 
-            //Game.SnakeMain();
+            Game.SnakeMain();
             for (; ; );
         }
 

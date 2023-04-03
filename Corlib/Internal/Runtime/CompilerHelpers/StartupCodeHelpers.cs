@@ -1,6 +1,12 @@
 using System;
 using System.Runtime;
 
+#if Kernel
+
+using MOOS;
+
+#endif
+
 #if BFLAT
 using System.Runtime.CompilerServices;
 #else
@@ -160,13 +166,8 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
-        private static bool SupportsRelativePointers = false;
-
         public static void InitializeModules(IntPtr Modules)
         {
-#if BFLAT
-        SupportsRelativePointers =true;
-#endif
             for (int i = 0; ; i++)
             {
                 if (((IntPtr*)Modules)[i].Equals(IntPtr.Zero))
@@ -183,7 +184,9 @@ namespace Internal.Runtime.CompilerHelpers
                 for (int k = 0; k < header->NumberOfSections; k++)
                 {
                     if (sections[k].SectionId == ReadyToRunSectionType.GCStaticRegion)
+                    {
                         InitializeStatics(sections[k].Start, sections[k].End);
+                    }
                     if (sections[k].SectionId == ReadyToRunSectionType.EagerCctor)
                         RunEagerClassConstructors(sections[k].Start, sections[k].End);
                 }
@@ -208,24 +211,22 @@ namespace Internal.Runtime.CompilerHelpers
         private static unsafe void InitializeStatics(IntPtr rgnStart, IntPtr rgnEnd)
         {
             var rgnEndPtr = (byte*)rgnEnd;
-            for (byte* block = (byte*)rgnStart; block < rgnEndPtr; block += SupportsRelativePointers ? sizeof(int) : sizeof(nint))
+            for (byte* block = (byte*)rgnStart; block < rgnEndPtr; block += MethodTable.SupportsRelativePointers ? sizeof(int) : sizeof(nint))
             {
-                IntPtr* pBlock = SupportsRelativePointers ? (IntPtr*)ReadRelPtr32(block) : *(IntPtr**)block;
-                nint blockAddr = SupportsRelativePointers ? (nint)ReadRelPtr32(pBlock) : *pBlock;
+                IntPtr* pBlock = MethodTable.SupportsRelativePointers ? (IntPtr*)ReadRelPtr32(block) : *(IntPtr**)block;
+                nint blockAddr = MethodTable.SupportsRelativePointers ? (nint)ReadRelPtr32(pBlock) : *pBlock;
+
                 if ((blockAddr & GCStaticRegionConstants.Uninitialized) == GCStaticRegionConstants.Uninitialized)
                 {
                     var obj = RhpNewFast((EEType*)(blockAddr & ~GCStaticRegionConstants.Mask));
-
                     if ((blockAddr & GCStaticRegionConstants.HasPreInitializedData) == GCStaticRegionConstants.HasPreInitializedData)
                     {
-                        //IntPtr pPreInitDataAddr = *(pBlock + 1);
-                        void* pPreInitDataAddr = SupportsRelativePointers ? ReadRelPtr32((int*)pBlock + 1) : (void*)*(pBlock + 1);
+                        void* pPreInitDataAddr = MethodTable.SupportsRelativePointers ? ReadRelPtr32((int*)pBlock + 1) : (void*)*(pBlock + 1);
                         fixed (byte* p = &obj.GetRawData())
                         {
                             MemCpy(p, (byte*)pPreInitDataAddr, obj.GetRawDataSize());
                         }
                     }
-
                     var handle = malloc((ulong)sizeof(IntPtr));
                     *(IntPtr*)handle = Unsafe.As<object, IntPtr>(ref obj);
                     *pBlock = handle;

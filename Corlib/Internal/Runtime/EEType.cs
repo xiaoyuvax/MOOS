@@ -130,13 +130,13 @@ namespace Internal.Runtime
         GenericTypeDefEEType = 0x0003,
     }
 
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct ObjHeader 
-    {
-        // Contents of the object header
-        private IntPtr _objHeaderContents;
-    }
+    // This has been moved to MethodTable.cs
+    //[StructLayout(LayoutKind.Sequential)]
+    //internal struct ObjHeader 
+    //{
+    //    // Contents of the object header
+    //    private IntPtr _objHeaderContents;
+    //}
 
     //    [StructLayout(LayoutKind.Sequential)]
     //    internal unsafe struct EEInterfaceInfo {

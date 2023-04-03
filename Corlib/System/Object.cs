@@ -26,6 +26,9 @@ namespace System
 
         internal uint GetRawDataSize()
         {
+#if Kernel
+            MOOS.ComDebugger.Debug("MethodTable", $"BaseSize={m_pEEType->BaseSize}");
+#endif
             return m_pEEType->BaseSize - (uint)sizeof(ObjHeader) - (uint)sizeof(EEType*);
         }
 

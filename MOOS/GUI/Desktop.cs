@@ -27,7 +27,7 @@ namespace MOOS.GUI
         public static MessageBox msgbox;
         public static WAVPlayer wavplayer;
 
-        public static bool IsAtRoot 
+        public static bool IsAtRoot
         {
             get => Desktop.Dir.Length < 1;
         }
@@ -51,8 +51,8 @@ namespace MOOS.GUI
 #endif
             Dir = "";
 
-            imageViewer = new ImageViewer(400,400);
-            msgbox = new MessageBox(100,300);
+            imageViewer = new ImageViewer(400, 400);
+            msgbox = new MessageBox(100, 300);
             wavplayer = new WAVPlayer(450, 200);
             imageViewer.Visible = false;
             msgbox.Visible = false;
@@ -95,7 +95,7 @@ namespace MOOS.GUI
             int X = Devide;
             int Y = Devide;
 
-            if(IsAtRoot)
+            if (IsAtRoot)
             {
                 for (int i = 0; i < BuiltInAppNames.Length; i++)
                 {
@@ -108,7 +108,7 @@ namespace MOOS.GUI
                     ClickEvent(BuiltInAppNames[i], false, X, Y, i);
 
                     Framebuffer.Graphics.DrawImage(X, Y, BuiltInAppIcon);
-                    WindowManager.font.DrawString(X, Y + FileIcon.Height, BuiltInAppNames[i], FileIcon.Width + 8, WindowManager.font.FontSize * 3); 
+                    WindowManager.font.DrawString(X, Y + FileIcon.Height, BuiltInAppNames[i], FileIcon.Width + 8, WindowManager.font.FontSize * 3);
                     Y += FileIcon.Height + Devide;
                 }
             }
@@ -123,7 +123,7 @@ namespace MOOS.GUI
 
                 ClickEvent(names[i].Name, names[i].Attribute == FileAttribute.Directory, X, Y, i + (IsAtRoot ? BuiltInAppNames.Length : 0));
 
-                if (names[i].Name.EndsWith(".png")||names[i].Name.EndsWith(".bmp"))
+                if (names[i].Name.EndsWith(".png") || names[i].Name.EndsWith(".bmp"))
                 {
                     Framebuffer.Graphics.DrawImage(X, Y, IamgeIcon);
                 }
@@ -131,15 +131,15 @@ namespace MOOS.GUI
                 {
                     Framebuffer.Graphics.DrawImage(X, Y, DoomIcon);
                 }
-                else if(names[i].Name.EndsWith(".nes"))
+                else if (names[i].Name.EndsWith(".nes"))
                 {
                     Framebuffer.Graphics.DrawImage(X, Y, GameIcon);
                 }
-                else if(names[i].Name.EndsWith(".mue"))
+                else if (names[i].Name.EndsWith(".mue"))
                 {
                     Framebuffer.Graphics.DrawImage(X, Y, AppIcon);
                 }
-                else if(names[i].Name.EndsWith(".wav"))
+                else if (names[i].Name.EndsWith(".wav"))
                 {
                     Framebuffer.Graphics.DrawImage(X, Y, AudioIcon);
                 }
@@ -161,16 +161,16 @@ namespace MOOS.GUI
             }
             names.Dispose();
 
-            if (Control.MouseButtons.HasFlag(MouseButtons.Left) && !WindowManager.HasWindowMoving && !WindowManager.MouseHandled) 
+            if (Control.MouseButtons.HasFlag(MouseButtons.Left) && !WindowManager.HasWindowMoving && !WindowManager.MouseHandled)
             {
-                if (LastPoint.X == -1 && LastPoint.Y == -1) 
+                if (LastPoint.X == -1 && LastPoint.Y == -1)
                 {
                     LastPoint.X = Control.MousePosition.X;
                     LastPoint.Y = Control.MousePosition.Y;
                 }
-                else 
+                else
                 {
-                    if(Control.MousePosition.X > LastPoint.X && Control.MousePosition.Y > LastPoint.Y)
+                    if (Control.MousePosition.X > LastPoint.X && Control.MousePosition.Y > LastPoint.Y)
                     {
                         Framebuffer.Graphics.AFillRectangle(
                             LastPoint.X,
@@ -239,7 +239,7 @@ namespace MOOS.GUI
 
         public static Point LastPoint;
 
-        private static void ClickEvent(string name,bool isDirectory, int X, int Y, int i)
+        private static void ClickEvent(string name, bool isDirectory, int X, int Y, int i)
         {
             if (Control.MouseButtons == MouseButtons.Left)
             {
@@ -304,6 +304,7 @@ namespace MOOS.GUI
             else if (name.EndsWith(".mue"))
             {
                 byte[] buffer = File.ReadAllBytes(path);
+                ComDebugger.Debug("Desktop.OnClick", path);
                 Process.Start(buffer);
             }
             else if (name.EndsWith(".wav"))

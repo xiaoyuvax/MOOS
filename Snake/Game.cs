@@ -88,25 +88,13 @@ internal class Game
 
     public static void SnakeMain()
     {
-#if WINDOWS
-        Console.SetWindowSize(FrameBuffer.Width, FrameBuffer.Height + 1);
-        Console.SetBufferSize(FrameBuffer.Width, FrameBuffer.Height + 1);
-        Console.Title = "See Sharp Snake";
-        Console.CursorVisible = false;
-#endif
 
         FrameBuffer fb = new FrameBuffer();
-
         while (isRunning)
         {
-#if UEFI
-            // Work around TickCount crashing on QEMU
-            Game g = new Game(0);
-#else
-            Console.WriteLine("Entered");
             Game g = new Game((uint)DateTime.Now.Ticks);
-#endif
-            Result result = Result.Win;//g.Run(ref fb);
+
+            Result result = g.Run(ref fb);
 
             string message = result == Result.Win ? "You win" : "You lose";
 
@@ -118,9 +106,8 @@ internal class Game
 
             fb.Render();
 
-            // Console.ReadKey(intercept: true);
+            //Console.ReadKey(intercept: true);
         }
-
         fb.Dispose();
     }
 }

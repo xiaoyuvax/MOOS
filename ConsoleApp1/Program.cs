@@ -51,8 +51,8 @@ namespace ConsoleApp1
         [DllImport("WriteString")]
         public static extern void WriteString(string s);
 
-        [RuntimeExport("KMain")]
-        public static void KMain()
+        [RuntimeExport("Main")]
+        public static void Main()
         {
             Console.Setup();
             Console.WriteLine("Content of Text.txt is: ");
@@ -66,9 +66,6 @@ namespace ConsoleApp1
 
             for (; ; );
         }
-
-
         
-        public static void Main() { }
     }
 }
