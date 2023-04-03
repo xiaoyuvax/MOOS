@@ -54,6 +54,7 @@ This .bfa file have included all Prebuild Actions such as invoking nasm.exe to c
 	## --ldflags "/DEBUG"
 
 	# Prebuild actions:
+	-pra:"'$(MSBuildStartupDirectory)\Tools\7-Zip\7z.exe' a '$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar' '$(MSBuildStartupDirectory)\Ramdisk\*'"
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\Trampoline.asm' -o trampoline.o"
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\EntryPoint.asm' -o loader.o"
 
