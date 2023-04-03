@@ -52,6 +52,7 @@ MOOS的一个问题是，它目前只能使用一个古老且修改过的版本�
 	## --ldflags "/DEBUG"
 
 	# 编译前动作：
+	-pra:"'$(MSBuildStartupDirectory)\Tools\7-Zip\7z.exe' a '$(MSBuildStartupDirectory)\Tools\grub2\boot\ramdisk.tar' '$(MSBuildStartupDirectory)\Ramdisk\*'"
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\Trampoline.asm' -o trampoline.o"
 	-pra:"'$(MSBuildStartupDirectory)\Tools\nasm.exe' -fbin '$(MSBuildStartupDirectory)\Tools\EntryPoint.asm' -o loader.o"
 
