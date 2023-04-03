@@ -1,0 +1,26 @@
+# BFlatA verb and project to build
+## these two lines must present at the start in order.
+build
+D:\Repos\MOOS\ConsoleApp1\ConsoleApp1.csproj
+-h:d:\repos\moos\ConsoleApp1
+--target:exe
+
+# Base lib selection:
+## If there's <NoStdLib> tag in .csproj, you don't have to add this line below
+--stdlib None
+--libc none
+
+# Use external linker:
+## The linker comes with BFlat has some problem with MSVC libs, we'll use MSVC Linker instead.
+--linker:"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\link.exe"
+
+# Additional linker args:
+## Due to bflat's arg parsing bug, spaces in path does not work, may be replaced with short filenames like below or use single quotes "'" as inner quotation.
+--ldflags "/libpath:'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.35.32215\lib\x64'"
+## The following line is not neccessary if you want an optimized release build
+--ldflags "/DEBUG"
+
+# Prebuild actions:
+
+# Postbuild actions:
+-poa:"cmd /c Copy '$(NativeOutputPath)$(TargetName)$(NativeBinaryExt)' '$(MSBuildStartupDirectory)\..\Ramdisk\$(TargetName).mue'"
