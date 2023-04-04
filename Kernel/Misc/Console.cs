@@ -15,6 +15,7 @@ namespace MOOS
         public static int CursorY = 0;
 
         public delegate void OnWriteHandler(char chr);
+
         public static event OnWriteHandler OnWrite;
 
         private static uint[] ColorsFB;
@@ -53,7 +54,6 @@ namespace MOOS
             };
 
             ForegroundColor = ConsoleColor.White;
-
         }
 
         public static void Wait(ref bool b)
@@ -66,24 +66,31 @@ namespace MOOS
                     case 0:
                         Console.Write('/', true);
                         break;
+
                     case 1:
                         Console.Write('-', true);
                         break;
+
                     case 2:
                         Console.Write('\\', true);
                         break;
+
                     case 3:
                         Console.Write('|', true);
                         break;
+
                     case 4:
                         Console.Write('/', true);
                         break;
+
                     case 5:
                         Console.Write('-', true);
                         break;
+
                     case 6:
                         Console.Write('\\', true);
                         break;
+
                     case 7:
                         Console.Write('|', true);
                         break;
@@ -105,24 +112,31 @@ namespace MOOS
                     case 0:
                         Console.Write('/', true);
                         break;
+
                     case 1:
                         Console.Write('-', true);
                         break;
+
                     case 2:
                         Console.Write('\\', true);
                         break;
+
                     case 3:
                         Console.Write('|', true);
                         break;
+
                     case 4:
                         Console.Write('/', true);
                         break;
+
                     case 5:
                         Console.Write('-', true);
                         break;
+
                     case 6:
                         Console.Write('\\', true);
                         break;
+
                     case 7:
                         Console.Write('|', true);
                         break;
@@ -150,24 +164,31 @@ namespace MOOS
                     case 0:
                         Console.Write('/', true);
                         break;
+
                     case 1:
                         Console.Write('-', true);
                         break;
+
                     case 2:
                         Console.Write('\\', true);
                         break;
+
                     case 3:
                         Console.Write('|', true);
                         break;
+
                     case 4:
                         Console.Write('/', true);
                         break;
+
                     case 5:
                         Console.Write('-', true);
                         break;
+
                     case 6:
                         Console.Write('\\', true);
                         break;
+
                     case 7:
                         Console.Write('|', true);
                         break;
@@ -260,10 +281,12 @@ namespace MOOS
                     case ConsoleKey.Enter:
                         Console.WriteLine();
                         break;
+
                     case ConsoleKey.Delete:
                     case ConsoleKey.Backspace:
                         Console.Back();
                         break;
+
                     default:
                         Console.Write(Keyboard.KeyInfo.KeyChar);
                         break;
@@ -285,6 +308,7 @@ namespace MOOS
                         if (s.Length == 0) continue;
                         s.Length -= 1;
                         break;
+
                     default:
                         string cache1 = key.KeyChar.ToString();
                         string cache2 = s + cache1;
@@ -292,7 +316,6 @@ namespace MOOS
                         cache1.Dispose();
                         s = cache2;
                         break;
-
                 }
                 Native.Hlt();
             }
@@ -325,6 +348,18 @@ namespace MOOS
             }
         }
 
+        internal static void SetCursorPosition(int left, int top)
+        {
+            // Basic argument validation.  The PAL implementation may provide further validation.
+            if (left < 0 || left >= short.MaxValue) return;
+            if (top < 0 || top >= short.MaxValue) return;
+
+            CursorX = left;
+            CursorY = top;
+            ComDebugger.Debug(nameof(SetCursorPosition), $"Cursor={CursorX},{CursorY}");
+            UpdateCursor();
+        }
+
         private static void UpdateCursor()
         {
             UpdateCursorFramebuffer();
@@ -342,26 +377,16 @@ namespace MOOS
             }
         }
 
-        public static void WriteLine(string s)
+        public static void WriteLine(string s = null)
         {
-            Write(s);
+            if (s != null) Write(s);
             OnWrite?.Invoke('\n');
             WriteFramebuffer(' ');
             CursorX = 0;
             CursorY++;
             MoveUp();
             UpdateCursor();
-            s.Dispose();
-        }
-
-        public static void WriteLine()
-        {
-            OnWrite?.Invoke('\n');
-            WriteFramebuffer(' ');
-            CursorX = 0;
-            CursorY++;
-            MoveUp();
-            UpdateCursor();
+            if (s != null) s.Dispose();
         }
 
         public static void Clear()

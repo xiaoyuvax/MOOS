@@ -34,7 +34,7 @@
 	<!--CustomizeReferences-->
 	<Target Name="CustomizeReferences" BeforeTargets="BeforeCompile" AfterTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="%(Filename) != 'Corlib'" />
+			<ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="%(Filename) != 'Corlib' And %(Filename) != 'MOOS.App'" />
 			<ReferencePath Remove="@(ReferencePath)" />
 		</ItemGroup>
 	</Target>
@@ -47,9 +47,9 @@
 		<PrivateSdkAssemblies Include="Snake" />
 		<FrameworkAssemblies Include="Snake" />
 	</ItemGroup>
-
-	
-	<Import Project="..\Corlib\Corlib.projitems" Label="Shared" />
+	<ItemGroup>
+	  <ProjectReference Include="..\MOOS.App\MOOS.App.csproj" />
+	</ItemGroup>
 
 
 </Project>

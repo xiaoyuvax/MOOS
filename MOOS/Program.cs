@@ -99,9 +99,9 @@ unsafe class Program
         if (HID.Mouse != null)
         {
             Console.Write("[Warning] Press please press Mouse any key to validate USB Mouse ");
-            bool res = Console.Wait(&USBMouseTest,2000);
+            bool res = Console.Wait(&USBMouseTest, 2000);
             Console.WriteLine();
-            if (!res) 
+            if (!res)
             {
                 lock (null)
                 {
@@ -292,7 +292,7 @@ unsafe class Program
 
         for (; ; )
         {
-#region ConsoleHotKey
+            #region ConsoleHotKey
             if (
                 Keyboard.KeyInfo.Key == ConsoleKey.T &&
                 Keyboard.KeyInfo.Modifiers.HasFlag(ConsoleModifiers.Control) &&
@@ -303,8 +303,8 @@ unsafe class Program
                 if (FConsole.Visible == false)
                     FConsole.Visible = true;
             }
-#endregion
-#region Right Menu
+            #endregion
+            #region Right Menu
             if (Control.MouseButtons.HasFlag(MouseButtons.Right))
             {
                 rightClicked = true;
@@ -319,12 +319,12 @@ unsafe class Program
 
                 rightClicked = false;
             }
-#endregion
+            #endregion
             WindowManager.InputAll();
 
             Framebuffer.Graphics.DrawImage((Framebuffer.Width / 2) - (Wallpaper.Width / 2), (Framebuffer.Height / 2) - (Wallpaper.Height / 2), Wallpaper, false);
             Desktop.Update();
-            WindowManager.DrawAll(); 
+            WindowManager.DrawAll();
             NotificationManager.Update();
             /*
             ASC16.DrawString("FPS: ", 10, 10, 0xFFFFFFFF);

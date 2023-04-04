@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using MOOS;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -1134,7 +1135,7 @@ namespace System
         {
             get
             {
-                ulong time = GetTime();
+                ulong time = GetTime();                
                 int century =     (int)((time & 0xFF_00_00_00_00_00_00_00)>>56);
                 int year =        (int)((time & 0x00_FF_00_00_00_00_00_00)>>48);
                 int month =       (int)((time & 0x00_00_FF_00_00_00_00_00)>>40);

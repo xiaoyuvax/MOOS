@@ -47,9 +47,17 @@ namespace Internal.Runtime.CompilerHelpers
             //To Do
         }
 
-        //public unsafe static void FreeCoTaskMem(void* p)
-        //{
-        //    stdlib.free(p);  //Can i simply free it?
-        //}
+
+        /// <summary>
+        /// Convert a single ANSI byte value to a single UNICODE wide char value, best fit.
+        /// </summary>
+        /// <param name="nativeValue">Single ANSI byte value.</param>
+        public static unsafe char AnsiCharToWideChar(byte nativeValue)
+        {
+            
+            return (char)nativeValue;
+        }
+
+
     }
 }

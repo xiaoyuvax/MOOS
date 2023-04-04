@@ -1,14 +1,17 @@
-﻿using System;
+﻿using MOOS.App;
+using System;
 
 namespace Snake;
 
-internal unsafe struct FrameBuffer :IDisposable
+internal unsafe struct FrameBuffer : IDisposable
 {
+    public FrameBuffer() { }
+
     public const int Width = 40;
     public const int Height = 20;
     public const int Area = Width * Height;
 
-    fixed char _chars[Area];
+    private char[] _chars = new char[Area];
 
     public void SetPixel(int x, int y, char character)
     {
@@ -17,20 +20,22 @@ internal unsafe struct FrameBuffer :IDisposable
 
     public void Clear()
     {
-        for (int i = 0; i < Area; i++)
-            _chars[i] = ' ';
+        for (int i = 0; i < Area; i++) _chars[i] = ' ';
     }
 
     public readonly void Render()
     {
         const ConsoleColor snakeColor = ConsoleColor.Green;
-
+        Interop.DebugWrite($"Render->CursorPos={Console.CursorX},{Console.CursorY}");
         Console.ForegroundColor = snakeColor;
 
         for (int i = 0; i < Area; i++)
         {
+            Interop.ALock();
             if (i % Width == 0)
+            {
                 Console.SetCursorPosition(0, i / Width);
+            }
 
             char c = _chars[i];
 
@@ -42,6 +47,7 @@ internal unsafe struct FrameBuffer :IDisposable
             }
             else
                 Console.Write(c);
+            Interop.UnLock();
         }
     }
 }

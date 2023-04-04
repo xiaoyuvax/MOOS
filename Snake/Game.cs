@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MOOS.App;
+using System;
 using Thread = System.Threading.Thread;
 
 namespace Snake;
@@ -33,6 +34,7 @@ internal class Game
 
         MakeFood(s, out byte foodX, out byte foodY);
 
+        Result result;
         while (true)
         {
             fb.Clear();
@@ -40,7 +42,8 @@ internal class Game
             if (!s.Update())
             {
                 s.Draw(ref fb);
-                return Result.Loss;
+                result = Result.Loss;
+                break;
             }
 
             s.Draw(ref fb);
@@ -48,6 +51,7 @@ internal class Game
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo ki = Console.ReadKey(intercept: true);
+                Interop.DebugWrite($"ConsoleKeyInfo:{ki.Key}");
                 switch (ki.Key)
                 {
                     case ConsoleKey.Up:
@@ -63,17 +67,23 @@ internal class Game
 
             if (s.HitTest(foodX, foodY))
             {
-                if (s.Extend())
-                    MakeFood(s, out foodX, out foodY);
-                else return Result.Win;
+                if (s.Extend()) MakeFood(s, out foodX, out foodY);
+                else
+                {
+                    result = Result.Win;
+                    break;
+                }
             }
 
             fb.SetPixel(foodX, foodY, '*');
 
             fb.Render();
 
-            Thread.Sleep(100);
+            Thread.Sleep(2000);
         }
+
+        s.Dispose();
+        return result;
     }
 
     private void MakeFood(in Snake snake, out byte foodX, out byte foodY)
@@ -92,20 +102,21 @@ internal class Game
         FrameBuffer fb = new FrameBuffer();
         while (isRunning)
         {
-            Game g = new Game((uint)DateTime.Now.Ticks);
 
+            Game g = new Game(100);
             Result result = g.Run(ref fb);
-
+            Interop.WriteString("SnakeMain.4");
             string message = result == Result.Win ? "You win" : "You lose";
-
+            result.Dispose();
+            Interop.WriteString("SnakeMain.5");
             int position = (FrameBuffer.Width - message.Length) / 2;
             for (int i = 0; i < message.Length; i++)
             {
                 fb.SetPixel(position + i, FrameBuffer.Height / 2, message[i]);
             }
-
+            Interop.WriteString("SnakeMain.6");
             fb.Render();
-
+            Interop.WriteString("SnakeMain.7");
             //Console.ReadKey(intercept: true);
         }
         fb.Dispose();

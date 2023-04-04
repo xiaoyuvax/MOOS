@@ -10,13 +10,14 @@ namespace MOOS
 
         public static EventHandler<ConsoleKeyInfo> OnKeyChanged;
 
-        public static void Initialize() 
+        public static void Initialize()
         {
             OnKeyChanged = null;
         }
 
-        internal static void InvokeOnKeyChanged(ConsoleKeyInfo info) 
+        internal static void InvokeOnKeyChanged(ConsoleKeyInfo info)
         {
+            ComDebugger.Debug(nameof(Keyboard), "Key=" + ((int)info.KeyChar).ToString());
             OnKeyChanged?.Invoke(null, info);
         }
 

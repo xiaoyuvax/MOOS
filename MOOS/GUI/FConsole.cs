@@ -13,7 +13,7 @@ namespace MOOS.GUI
         public Image ScreenBuf;
         string Cmd;
 
-        public FConsole(int X, int Y) : base(X, Y, 640, 320)
+        public FConsole(int X, int Y) : base(X, Y, 640, 480)//640, 320)
         {
 #if Chinese
             Title = "控制台";
@@ -83,7 +83,7 @@ namespace MOOS.GUI
                             Console.WriteLine("multi-processor IDs:");
                             for (int i = 0; i < ACPI.LocalAPIC_CPUIDs.Count; i++)
                                 Console.WriteLine($" cpu id:{ACPI.LocalAPIC_CPUIDs[i]}");
-                            Console.WriteLine($"frequency: {Timer.CPU_Clock/1048576}mhz");
+                            Console.WriteLine($"frequency: {Timer.CPU_Clock / 1048576}mhz");
                             break;
 
                         case "null":
@@ -126,18 +126,18 @@ namespace MOOS.GUI
             //BitFont.DrawString("Song", 0xFFFFFFFF, Data, X, Y, 640);
         }
 
-        public void DrawString(int X, int Y, string Str,int HeightLimit = -1, int LineLimit = -1)
+        public void DrawString(int X, int Y, string Str, int HeightLimit = -1, int LineLimit = -1)
         {
             int w = 0, h = 0;
             for (int i = 0; i < Str.Length; i++)
             {
-                w += WindowManager.font.DrawChar(Framebuffer.Graphics,X + w, Y + h, Str[i]);
+                w += WindowManager.font.DrawChar(Framebuffer.Graphics, X + w, Y + h, Str[i]);
                 if (w + WindowManager.font.FontSize > LineLimit && LineLimit != -1 || Str[i] == '\n')
                 {
                     w = 0;
                     h += WindowManager.font.FontSize;
 
-                    if(HeightLimit != -1 && h >= HeightLimit)
+                    if (HeightLimit != -1 && h >= HeightLimit)
                     {
                         Framebuffer.Graphics.Copy(X, Y, X, Y + WindowManager.font.FontSize, LineLimit, HeightLimit - (WindowManager.font.FontSize));
                         Framebuffer.Graphics.FillRectangle(X, Y + HeightLimit - (WindowManager.font.FontSize), LineLimit, WindowManager.font.FontSize, 0xFF222222);

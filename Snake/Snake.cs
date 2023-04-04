@@ -1,7 +1,8 @@
 ﻿using System;
 
 namespace Snake;
-struct Snake : IDisposable
+
+internal struct Snake : IDisposable
 {
     public const int MaxLength = 30;
 
@@ -121,7 +122,7 @@ struct Snake : IDisposable
     }
 
     // Helper struct to pack and unpack the packed integer in _body.
-    readonly struct Part
+    private readonly struct Part
     {
         public readonly byte X, Y;
         public readonly char Character;
@@ -134,11 +135,19 @@ struct Snake : IDisposable
         }
 
         public int Pack() => X << 24 | Y << 16 | Character;
+
         public static Part Unpack(int packed) => new Part((byte)(packed >> 24), (byte)(packed >> 16), (char)packed);
     }
 
     public enum Direction
     {
         Up, Right, Down, Left
+    }
+
+    public override void Dispose()
+    {
+        _direction.Dispose();
+        _oldDirection.Dispose();
+        base.Dispose();
     }
 }
