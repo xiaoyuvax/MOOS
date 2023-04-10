@@ -98,7 +98,7 @@ namespace MOOS
                 phase++;
                 phase %= 8;
                 Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                ACPITimer.SleepMicroseconds(100000);
             }
         }
 
@@ -144,7 +144,7 @@ namespace MOOS
                 phase++;
                 phase %= 8;
                 Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                ACPITimer.SleepMicroseconds(100000);
             }
         }
 
@@ -196,7 +196,7 @@ namespace MOOS
                 phase++;
                 phase %= 8;
                 Console.CursorX--;
-                ACPITimer.Sleep(100000);
+                ACPITimer.SleepMicroseconds(100000);
             }
             return true;
         }
