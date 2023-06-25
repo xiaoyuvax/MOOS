@@ -60,7 +60,7 @@ Environment:
 | Nintendo Family Computer Emulator | 🟩 | 🟩 |
 | DOOM(doomgeneric) | 🟩 | 🟩 |
 | Intel® Gigabit Ethernet Network | 🟩 | 🟩 |
-| Realtek RTL8139 | 🟩 | ⬜ |
+| Realtek RTL8111E | 🟩 | 🟩 |
 | ExFAT | 🟩 | 🟩 |
 | I/O APIC | 🟩 | 🟩 |
 | Local APIC | 🟩 | 🟩 |
@@ -70,8 +70,10 @@ Environment:
 | ACPI | 🟩 | 🟩 |
 | IPv4 | 🟩 | 🟩 |
 | IPv6 | 🟥 | 🟥 |
-| TCP(WIP) | 🟨 | 🟥 |
-| UDP | 🟩 | ⬜ |
+| TCP | 🟩 | 🟩 |
+| UDP | 🟩 | 🟩 |
+| DNS | 🟩 | 🟩 |
+| DHCP | 🟩 | 🟩 |
 | Lan | 🟩 | 🟩 |
 | Wan | 🟩 | 🟩 |
 
